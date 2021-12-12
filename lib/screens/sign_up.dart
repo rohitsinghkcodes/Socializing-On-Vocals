@@ -41,7 +41,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   //Signup Process
-  Future<bool> SignUp(String email, String password) async {
+  Future<bool> signUp(String email, String password) async {
     var headers = {'Content-Type': 'application/json'};
     var request = http.Request(
         'POST', Uri.parse('https://thetshirtstore.herokuapp.com/api/signup'));
@@ -54,12 +54,12 @@ class _SignUpState extends State<SignUp> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+      debugPrint(await response.stream.bytesToString());
       return true;
     } else {
-      print(response.reasonPhrase);
-      print("runing api check----------------");
-      print(response.reasonPhrase.runtimeType);
+      debugPrint(response.reasonPhrase);
+      debugPrint("runing api check----------------");
+      debugPrint(response.reasonPhrase.runtimeType.toString());
       return false;
     }
   }
@@ -68,7 +68,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8603F1),
+      backgroundColor: const Color(0xFF8603F1),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -80,13 +80,13 @@ class _SignUpState extends State<SignUp> {
               Flexible(
                 child: Hero(
                   tag: 'logo',
-                  child: Container(
+                  child: SizedBox(
                     height: 200.0,
                     child: Image.asset('images/logo.png'),
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 48.0,
               ),
               Form(
@@ -97,7 +97,7 @@ class _SignUpState extends State<SignUp> {
                     //Name
                     TextFormField(
                       keyboardType: TextInputType.name,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       textAlign: TextAlign.center,
                       onChanged: (value) {
                         //Do something with the user input.
@@ -109,13 +109,13 @@ class _SignUpState extends State<SignUp> {
                         return nameCheck(value!);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8.0,
                     ),
                     //Phone Number
                     TextFormField(
                       keyboardType: TextInputType.number,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       textAlign: TextAlign.center,
                       onChanged: (value) {
                         //Do something with the user input.
@@ -127,13 +127,13 @@ class _SignUpState extends State<SignUp> {
                         return phoneCheck(value!);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8.0,
                     ),
                     //Email
                     TextFormField(
                       keyboardType: TextInputType.emailAddress,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       textAlign: TextAlign.center,
                       onChanged: (value) {
                         //Do something with the user input.
@@ -145,14 +145,14 @@ class _SignUpState extends State<SignUp> {
                         return emailCheck(value!);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8.0,
                     ),
                     //Password
                     TextFormField(
                       obscureText: true,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       onChanged: (value) {
                         //Do something with the user input.
                         password = value;
@@ -167,7 +167,7 @@ class _SignUpState extends State<SignUp> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20.0,
               ),
               RoundedButton(
@@ -180,13 +180,13 @@ class _SignUpState extends State<SignUp> {
                     });
 
                     try {
-                      bool newToken = await SignUp(email, password);
+                      bool newToken = await signUp(email, password);
                       if (newToken) {
                         // Navigator.pushNamed(context,SignIn.id);
                         Navigator.pushNamedAndRemoveUntil(
                             context, SignIn.id, (route) => false);
                       } else {
-                        print("error in registration");
+                        debugPrint("error in registration");
                         Fluttertoast.showToast(
                           msg: "Invalid User Details!\nPlease try again.",
                           backgroundColor: Colors.black87,
@@ -199,7 +199,7 @@ class _SignUpState extends State<SignUp> {
                         showSpinner = false;
                       });
                     } catch (e) {
-                      print(e);
+                      debugPrint(e.toString());
                     }
                   }
                 },),

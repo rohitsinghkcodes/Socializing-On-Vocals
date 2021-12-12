@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +8,9 @@ import 'package:socializing_on_vocals/helper/constants.dart';
 import 'package:socializing_on_vocals/helper/input_field_conditions.dart';
 
 class UploadFile extends StatefulWidget {
-  static final id = "upload_screen";
+  static const id = "upload_screen";
+
+  const UploadFile({Key? key}) : super(key: key);
 
   @override
   _UploadFileState createState() => _UploadFileState();
@@ -17,21 +18,20 @@ class UploadFile extends StatefulWidget {
 
 class _UploadFileState extends State<UploadFile> {
   List<PlatformFile>? _files;
+  //Spinner for loading screen
   bool showSpinner = false;
-
-
+  //description of the song
   late String description;
-
+  //checking variable for file selected or not
   bool isAnyFileSelected = false;
-
   //Controller for textformfield
-  var _controllerTEC = TextEditingController();
-
+  final _controllerTEC = TextEditingController();
   //form Key
   final _formKey = GlobalKey<FormState>();
-
   //color
-  final Color mainThemePurple = Color(0xFF8603F1);
+  final Color mainThemePurple = const Color(0xFF8603F1);
+  //Post request url
+  String postUrl = "https://socializingonvocls.herokuapp.com/submit";
 
   //explorer pick
   void _openFileExplorer() async {
@@ -42,42 +42,36 @@ class _UploadFileState extends State<UploadFile> {
     ))!
         .files;
 
-    if (_files!.first.bytes != null || _files!.first.path != null) {
 
+    if (_files!.first.bytes != null || _files!.first.path != null) {
       //This means some file is selected
       setState(() {
-      isAnyFileSelected = true;
+        isAnyFileSelected = true;
       });
 
-      //Specific for web and app check
-      if (kIsWeb) {
-        print('File path: ${_files!.first.bytes}');
-        // return _files!.first.bytes;
-      } else {
-        print('File path: ${_files!.first.path}');
-        // return _files!.first.path;
-      }
+      debugPrint('File path: ${_files!.first.path}');
     } else {
-      print('Error in file selection');
+      debugPrint('Error in file selection');
       // return null;
     }
   }
 
-  //Uploading Uploading
+  //Selected File Size
+    fileSize() {
+     int sizeInBytes = _files!.first.size;
+     double sizeInMb = sizeInBytes / (1024 * 1024);
+     debugPrint('filesize---- $sizeInMb MB');
+     return sizeInMb;
+   }
+
+  //File Uploading
   Future<bool> fileUpload(String desc) async {
     var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('https://socialzingonvocals.herokuapp.com/submit'));
 
-    // var filePath = _openFileExplorer();
-    // if(filePath == null)
-    //   {
-    //     print('Error in file selection'); //checking purpose only
-    //   }
-    print('Check101:: ${_files!.first.path.toString()}');
-    request.files
-        // .add(await http.MultipartFile.fromPath('file', _files!.first.path.toString()));
-        .add(await http.MultipartFile.fromPath(
+    var request = http.MultipartRequest(
+        'POST', Uri.parse(postUrl));
+
+    request.files.add(await http.MultipartFile.fromPath(
             'file', _files!.first.path.toString()));
 
     // description
@@ -85,17 +79,18 @@ class _UploadFileState extends State<UploadFile> {
 
     //Adding headers
     request.headers.addAll(headers);
+
     // http.StreamedResponse response = await request.send();
     var response = await request.send();
 
-    print(response.statusCode);
+    debugPrint(response.statusCode.toString());
+
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      // print('uploaded');
+      debugPrint(await response.stream.bytesToString());
       return true;
     } else {
-      print(response.statusCode);
-      print('check1 ${response.reasonPhrase}');
+      debugPrint(response.statusCode.toString());
+      debugPrint('check1 ${response.reasonPhrase}');
       return false;
     }
   }
@@ -103,17 +98,17 @@ class _UploadFileState extends State<UploadFile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black26,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: mainThemePurple,
         centerTitle: true,
-        title: Text('File Upload'),
+        title: const Text('File Upload'),
       ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Center(
           child: Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -121,89 +116,112 @@ class _UploadFileState extends State<UploadFile> {
                 children: [
                   TextFormField(
                     controller: _controllerTEC,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black),
                     keyboardType: TextInputType.multiline,
                     maxLines: 4,
                     decoration: kUploadFieldDecoration,
                     onChanged: (value) {
                       description = value;
                     },
-                    validator: (value){
+                    validator: (value) {
                       return descCheck(value!);
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 60,
                   ),
-
                   RoundedButton(
-                    color: isAnyFileSelected?Color(0xFF00B30F):Color(0xFFB43DFA),
-                    title: isAnyFileSelected?_files!.first.name:"Select file",
+                    color: isAnyFileSelected
+                        ? const Color(0xFF00B30F)
+                        : const Color(0xFFB43DFA),
+                    title:
+                        isAnyFileSelected ? _files!.first.name : "Select file",
                     onPressed: _openFileExplorer,
                   ),
-
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
-
                   RoundedButton(
                     color: mainThemePurple,
                     title: "Upload",
                     onPressed: () async {
-
-                      if(!isAnyFileSelected)
-                        {
-                          Fluttertoast.showToast(
-                              msg: "Please select any audio file!",
-                              toastLength: Toast.LENGTH_LONG,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.black,
-                              textColor: Colors.white,
-                              fontSize: 16.0
-                          );
-                        }
-
-                      if (_formKey.currentState!.validate() && _files!.first.path != null) {
-                        setState(() {
-                          showSpinner = true;
-                        });
-
-                        try {
-                          bool uploadResponse = await fileUpload(description);
-                          if (uploadResponse) {
-
-                            showDialog<String>(
-
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                backgroundColor: Color(0xFFAAFDAA),
-                                content: const Text('File Uploaded Successfully'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: (){
-                                      Navigator.pop(context, 'OK');
-                                      setState(() {
-                                        _controllerTEC.clear();
-                                        isAnyFileSelected = false;
-                                      });
-                                    },
-                                    child: const Text('OK',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
-                                  ),
-                                ],
-                              ),
-                            );
+                      if (!isAnyFileSelected) {
+                        Fluttertoast.showToast(
+                            msg: "Please select any audio file!",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.black,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
 
 
-                          } else {
-                            print('not uploaded');
-                          }
+                      if(fileSize() <= 3.0) {
+                        if (_formKey.currentState!.validate() &&
+                            _files!.first.path != null) {
                           setState(() {
-                            showSpinner = false;
+                            showSpinner = true;
                           });
-                        } catch (e) {
-                          print(e);
+
+                          try {
+                            bool uploadResponse = await fileUpload(description);
+                            if (uploadResponse) {
+                              showDialog<String>(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    AlertDialog(
+                                      shape:  const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                      backgroundColor: const Color(0xFFDFB5FF),
+                                      content:
+                                      const SizedBox(
+                                        height: 25.0,
+                                        child: Center(child: Text(
+                                            'File Uploaded Successfully',style: TextStyle(
+                                          color: Color(0xFF4B008B),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                        ),),),
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context, 'OK');
+                                            setState(() {
+                                              _controllerTEC.clear();
+                                              isAnyFileSelected = false;
+                                            });
+                                          },
+                                          child: const Text(
+                                            'OK',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                              );
+                            } else {
+                              debugPrint('not uploaded');
+                            }
+                            setState(() {
+                              showSpinner = false;
+                            });
+                          } catch (e) {
+                            debugPrint(e.toString());
+                          }
                         }
+                      }
+                      else{
+                        Fluttertoast.showToast(
+                          msg: "File size too big!\nPlease select file under 3MB",
+                          backgroundColor: Colors.black87,
+                          textColor: Colors.white,
+                          gravity: ToastGravity.BOTTOM,
+                          toastLength: Toast.LENGTH_LONG,
+                        );
                       }
                     },
                   ),

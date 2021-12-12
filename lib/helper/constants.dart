@@ -31,7 +31,7 @@ const kTextFieldDecoration = InputDecoration(
 
 const kUploadFieldDecoration = InputDecoration(
   hintText: 'Description',
-  hintStyle: TextStyle(color: Colors.white54),
+  hintStyle: TextStyle(color: Colors.grey),
 
   // hintStyle: TextStyle(color: Colors.grey),
   contentPadding:
