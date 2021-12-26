@@ -1,3 +1,4 @@
+import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/screens/sign_up.dart';
 import 'package:socializing_on_vocals/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Color(0xFF180015),
-      backgroundColor:  const Color(0xFF8603F1),
+      backgroundColor:  mainPurpleTheme,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
@@ -86,7 +87,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               height: 50.0,
             ),
             RoundedButton(
-              color: const Color(0xFFB43DFA),
+              color: purpleButton,
               title: 'Sign In',
               onPressed: () {
                 //Go to login screen.
@@ -94,7 +95,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               },
             ),
             RoundedButton(
-              color: Colors.redAccent,
+              color: redButton,
               title: 'SIgn Up',
 
               onPressed: () {

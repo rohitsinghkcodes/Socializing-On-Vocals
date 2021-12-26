@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socializing_on_vocals/Navigation/bottom_nav.dart';
 import 'package:socializing_on_vocals/components/rounded_button.dart';
-
+import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -27,14 +27,12 @@ class _SignInState extends State<SignIn> {
   //form Key
   final _formKey = GlobalKey<FormState>();
 
-  Future<bool> signIn(String email, String password) async {
+  Future<dynamic> signIn(String email, String password) async {
     var headers = {
       'Content-Type': 'application/json',
-      'Cookie':
-          'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTk2NjJkNTUyMjM4NzAwMjI4MDY2OTMiLCJpYXQiOjE2MzcyNDY0OTl9.9gWsbf3cFNso5zs94gTlUiEDPAzoZYvBto3qaYaiggM'
-    };
+      };
     var request = http.Request(
-        'POST', Uri.parse('https://thetshirtstore.herokuapp.com/api/signin'));
+        'POST', Uri.parse('https://socializingonvocls.herokuapp.com/api/signin'));
     request.body = json.encode({
       "email": email.toString(),
       "password": password.toString(),
@@ -44,16 +42,22 @@ class _SignInState extends State<SignIn> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      return true;
+      var resultResponse = await response.stream.bytesToString();
+      Map<String, dynamic> result = await jsonDecode(resultResponse);
+      //user id 
+      var userId = result["user"]["_id"];
+      debugPrint(userId);
+
+      return userId;
     } else {
-      return false;
+      return null;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF8603F1),
+      backgroundColor: mainPurpleTheme,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -118,7 +122,7 @@ class _SignInState extends State<SignIn> {
                 height: 20.0,
               ),
               RoundedButton(
-                  color: const Color(0xFFB43DFA),
+                  color: purpleButton,
                   title: 'Log In',
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
@@ -127,12 +131,14 @@ class _SignInState extends State<SignIn> {
                       });
 
                       try {
-                        bool userToken = await signIn(email, password);
-                        debugPrint('\nUsertoken $userToken');
-                        if (userToken) {
-                          // Navigator.pushNamed(context, Success.id);
+                        String userId = await signIn(email, password);
+                        debugPrint('\n usertoken $userId');
+                        if (userId.isNotEmpty) {
                           SharedPreferences prefs = await SharedPreferences.getInstance();
+                          //setting shared pref. variable value
                           prefs.setBool("isLoggedIn", true);
+                          prefs.setString('loggedInUserId', userId);
+
                           Navigator.pushNamedAndRemoveUntil(
                               context, BottomNav.id, (route) => false);
                         } else {

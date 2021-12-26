@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/helper/constants.dart';
 import 'package:socializing_on_vocals/screens/signin_screen.dart';
 import 'package:http/http.dart' as http;
@@ -9,8 +10,8 @@ import 'package:socializing_on_vocals/components/rounded_button.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class SignUp extends StatefulWidget {
-
   static const String id = 'signup_screen';
+
   const SignUp({Key? key}) : super(key: key);
 
   @override
@@ -44,13 +45,11 @@ class _SignUpState extends State<SignUp> {
   Future<bool> signUp(String email, String password) async {
     var headers = {'Content-Type': 'application/json'};
     var request = http.Request(
-        'POST', Uri.parse('https://thetshirtstore.herokuapp.com/api/signup'));
+        'POST', Uri.parse('https://socializingonvocls.herokuapp.com/api/signup'));
 
     request.body = json.encode(
         {"name": name, "email": email, "password": password, "phone": phone});
-
     request.headers.addAll(headers);
-
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
@@ -58,7 +57,7 @@ class _SignUpState extends State<SignUp> {
       return true;
     } else {
       debugPrint(response.reasonPhrase);
-      debugPrint("runing api check----------------");
+      debugPrint("running api check----------------");
       debugPrint(response.reasonPhrase.runtimeType.toString());
       return false;
     }
@@ -68,7 +67,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF8603F1),
+      backgroundColor: mainPurpleTheme,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -171,7 +170,7 @@ class _SignUpState extends State<SignUp> {
                 height: 20.0,
               ),
               RoundedButton(
-                color: Colors.redAccent,
+                color: redButton,
                 title: 'Register',
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {

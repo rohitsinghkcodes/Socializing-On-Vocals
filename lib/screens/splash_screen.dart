@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socializing_on_vocals/Navigation/bottom_nav.dart';
+import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/screens/welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF8603F1),
+      backgroundColor: mainPurpleTheme,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -42,7 +43,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void startTimer() {
-    Timer(const Duration(milliseconds: 1500), () {
+    Timer(const Duration(milliseconds: 1500), () async{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      debugPrint('user id---${prefs.getString('loggedInUserId')}');
+
       navigateUser(); //It will redirect  after  1.5 seconds
     });
   }
@@ -59,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => WelcomeScreen()));
+              builder: (BuildContext context) => const WelcomeScreen()));
     }
   }
 }

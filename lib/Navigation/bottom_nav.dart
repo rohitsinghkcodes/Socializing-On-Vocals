@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:socializing_on_vocals/helper/backpress_check.dart';
+import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/screens/home_screen.dart';
+import 'package:socializing_on_vocals/screens/settings_screen.dart';
 import 'package:socializing_on_vocals/screens/upload_screen.dart';
 
 class BottomNav extends StatefulWidget {
@@ -18,6 +20,7 @@ class _BottomNavState extends State<BottomNav> {
   final List<Widget> screens = [
      const HomeScreen(),
     const UploadFile(),
+    const Settings(),
   ];
 
   @override
@@ -27,9 +30,9 @@ class _BottomNavState extends State<BottomNav> {
       child: Scaffold(
         body: screens[currPage],
         bottomNavigationBar: CurvedNavigationBar(
-          color: const Color(0xFF8603F1),
+          color: mainPurpleTheme,
           backgroundColor: Colors.transparent,
-          buttonBackgroundColor: const Color(0xFF8603F1),
+          buttonBackgroundColor: mainPurpleTheme,
           animationDuration: const Duration(milliseconds: 400),
           index: 0,
           height: 55,
@@ -41,6 +44,10 @@ class _BottomNavState extends State<BottomNav> {
             ),
             Icon(
               Icons.add,
+              size: 25,
+              color: Colors.white,
+            ),Icon(
+              Icons.settings,
               size: 25,
               color: Colors.white,
             ),

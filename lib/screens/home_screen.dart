@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/screens/welcome_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,17 +22,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final String baseUrl = "https://socializingonvocls.herokuapp.com/audio/";
 
   AudioPlayer audioPlayer = AudioPlayer();
-
   PageController pageController = PageController(initialPage: 0);
   bool isplaying = true;
-
   bool showSpinner = false;
-
   List<String> songList = [];
   int playlistSize = 0;
-
   Icon icon = const Icon(Icons.pause);
 
+  //For fetching the Playlist
   Future fetchPlaylist() async {
     var url = Uri.parse(baseUrl);
     http.Response response = await http.get(url);
@@ -53,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           showSpinner = false;
         });
 
-        //Playing 1st audio song in the starting
+        //Playing 1st audio in the starting
         String playUrl = baseUrl + songList[0];
         audioPlayer.play(playUrl);
 
@@ -84,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       isplaying = true;
     }
   }
+
 
   @override
   void initState() {
@@ -132,33 +132,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
 
-  //Method for logging out user from the system
-  void logoutUser()async{
-    audioPlayer.stop();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
-    Navigator.pushNamedAndRemoveUntil(
-        context, WelcomeScreen.id, (route) => false);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+
       appBar: AppBar(
-        backgroundColor: const Color(0xFF8603F1),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('SOV'),
-            GestureDetector(
-              onTap: (){
-            logoutUser();
-              },
-              child: const Icon(Icons.exit_to_app),
-            ),
-          ],
-        ),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        elevation: 0,
+        toolbarHeight: 0,
+        backgroundColor: mainPurpleTheme,
+        // title: const Text('SOV'),
       ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
@@ -185,10 +169,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             itemBuilder: (context, position) {
               return Center(
                 child: FloatingActionButton(
-                  backgroundColor: const Color(0xFF8603F1),
+                  backgroundColor: mainPurpleTheme,
                   child: icon,
                   tooltip: "Play Music",
-                  onPressed: () {},
+                  onPressed: () {
+                    isplayingCheck();
+                  },
                 ),
               );
             },

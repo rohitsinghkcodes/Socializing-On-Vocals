@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:socializing_on_vocals/components/rounded_button.dart';
+import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/helper/constants.dart';
 import 'package:socializing_on_vocals/helper/input_field_conditions.dart';
 
@@ -29,7 +30,6 @@ class _UploadFileState extends State<UploadFile> {
   //form Key
   final _formKey = GlobalKey<FormState>();
   //color
-  final Color mainThemePurple = const Color(0xFF8603F1);
   //Post request url
   String postUrl = "https://socializingonvocls.herokuapp.com/submit";
 
@@ -100,9 +100,17 @@ class _UploadFileState extends State<UploadFile> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: mainThemePurple,
+        toolbarHeight: 50,
+        shape: const RoundedRectangleBorder(
+
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
+        backgroundColor: mainPurpleTheme,
+
         centerTitle: true,
-        title: const Text('File Upload'),
+        title: const Text('Upload'),
       ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
@@ -132,8 +140,8 @@ class _UploadFileState extends State<UploadFile> {
                   ),
                   RoundedButton(
                     color: isAnyFileSelected
-                        ? const Color(0xFF00B30F)
-                        : const Color(0xFFB43DFA),
+                        ? greenButton
+                        : purpleButton,
                     title:
                         isAnyFileSelected ? _files!.first.name : "Select file",
                     onPressed: _openFileExplorer,
@@ -142,7 +150,7 @@ class _UploadFileState extends State<UploadFile> {
                     height: 10,
                   ),
                   RoundedButton(
-                    color: mainThemePurple,
+                    color: mainPurpleTheme,
                     title: "Upload",
                     onPressed: () async {
                       if (!isAnyFileSelected) {
