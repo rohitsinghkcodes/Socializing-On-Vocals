@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   AudioPlayer audioPlayer = AudioPlayer();
   PageController pageController = PageController(initialPage: 0);
-  bool isplaying = true;
+  bool isPlaying = true;
   bool showSpinner = false;
   List<String> songList = [];
   int playlistSize = 0;
@@ -48,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           songList = list;
           playlistSize = list.length;
           showSpinner = false;
+          icon = const Icon(Icons.pause);
         });
 
         //Playing 1st audio in the starting
@@ -66,19 +67,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
 
   //Checking if audio is playing and perform task accordingly
-  void isplayingCheck() {
-    if (isplaying) {
+  void isPlayingCheck() {
+    if (isPlaying) {
       audioPlayer.pause();
       setState(() {
         icon = const Icon(Icons.play_arrow);
       });
-      isplaying = false;
+      isPlaying = false;
     } else {
       audioPlayer.resume();
       setState(() {
         icon = const Icon(Icons.pause);
       });
-      isplaying = true;
+      isPlaying = true;
     }
   }
 
@@ -146,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         inAsyncCall: showSpinner,
         child: GestureDetector(
           onTap: (){
-            isplayingCheck();
+            isPlayingCheck();
           },
           child: RefreshIndicator(
             onRefresh: fetchPlaylist,
@@ -160,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 debugPrint(audioNumber.toString());
                 audioPlayer.stop();
                 //Resetting the pause/play option
-                isplaying = true;
+                isPlaying = true;
                 setState(() {
                   icon = const Icon(Icons.pause);
                 });
@@ -174,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     child: icon,
                     tooltip: "Play Music",
                     onPressed: () {
-                      isplayingCheck();
+                      isPlayingCheck();
                     },
                   ),
                 );
