@@ -5,9 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
-import 'package:socializing_on_vocals/screens/welcome_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -150,34 +148,38 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           onTap: (){
             isplayingCheck();
           },
-          child: PageView.builder(
+          child: RefreshIndicator(
+            onRefresh: fetchPlaylist,
+            triggerMode: RefreshIndicatorTriggerMode.onEdge,
+            child: PageView.builder(
 
-            controller: pageController,
-            scrollDirection: Axis.vertical,
-            itemCount: playlistSize,
-            onPageChanged: (audioNumber) async {
-              debugPrint(audioNumber.toString());
-              audioPlayer.stop();
-              //Resetting the plause/play option
-              isplaying = true;
-              setState(() {
-                icon = const Icon(Icons.pause);
-              });
-              String playUrl = baseUrl + songList[audioNumber];     //song specific url
-              audioPlayer.play(playUrl);    //for playing song/audio
-            },
-            itemBuilder: (context, position) {
-              return Center(
-                child: FloatingActionButton(
-                  backgroundColor: mainPurpleTheme,
-                  child: icon,
-                  tooltip: "Play Music",
-                  onPressed: () {
-                    isplayingCheck();
-                  },
-                ),
-              );
-            },
+              controller: pageController,
+              scrollDirection: Axis.vertical,
+              itemCount: playlistSize,
+              onPageChanged: (audioNumber) async {
+                debugPrint(audioNumber.toString());
+                audioPlayer.stop();
+                //Resetting the pause/play option
+                isplaying = true;
+                setState(() {
+                  icon = const Icon(Icons.pause);
+                });
+                String playUrl = baseUrl + songList[audioNumber];     //song specific url
+                audioPlayer.play(playUrl);    //for playing song/audio
+              },
+              itemBuilder: (context, position) {
+                return Center(
+                  child: FloatingActionButton(
+                    backgroundColor: mainPurpleTheme,
+                    child: icon,
+                    tooltip: "Play Music",
+                    onPressed: () {
+                      isplayingCheck();
+                    },
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
