@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:socializing_on_vocals/Navigation/bottom_nav.dart';
+import 'package:socializing_on_vocals/screens/about_us_screen.dart';
 import 'package:socializing_on_vocals/screens/home_screen.dart';
+import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/settings_screen.dart';
 import 'package:socializing_on_vocals/screens/sign_up.dart';
 import 'package:socializing_on_vocals/screens/splash_screen.dart';
@@ -18,15 +20,32 @@ class Sov extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "SOV",
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
+
+      // For default light theme
+      theme: ThemeData.light().copyWith(
+        primaryColor: Colors.purple,
         errorColor: const Color(0xFFFF8989),
         inputDecorationTheme: const InputDecorationTheme(
           errorStyle: TextStyle(
             color: Color(0xFFFDA5A5),
           ),
         ),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+
+    //for dark theme
+      darkTheme: ThemeData.dark().copyWith(
+        primaryColor: Colors.purple,
+        errorColor: const Color(0xFFFF8989),
+        inputDecorationTheme: const InputDecorationTheme(
+          errorStyle: TextStyle(
+            color: Color(0xFFFDA5A5),
+          ),
+        ),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+
+      //Routes
       initialRoute: SplashScreen.id,
       routes: {
         SplashScreen.id: (context) => const SplashScreen(),
@@ -37,6 +56,8 @@ class Sov extends StatelessWidget {
         UploadFile.id: (context) => const UploadFile(),
         BottomNav.id: (context) => const BottomNav(),
         Settings.id: (context) => const Settings(),
+        ProfileScreen.id: (context) => const ProfileScreen(),
+        AboutUs.id: (context) => const AboutUs(),
       },
     );
   }

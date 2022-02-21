@@ -134,8 +134,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.light,
         elevation: 0,
@@ -152,6 +150,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           child: RefreshIndicator(
             onRefresh: fetchPlaylist,
             triggerMode: RefreshIndicatorTriggerMode.onEdge,
+            strokeWidth: 4.0,
+            color: mainPurpleTheme,
             child: PageView.builder(
 
               controller: pageController,

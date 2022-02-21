@@ -25,6 +25,7 @@ dependencies:
   file_picker: ^4.2.7
   curved_navigation_bar: ^1.0.1
   flutter_spinkit: ^5.1.0
+  flutter_markdown: ^0.6.9
 
 dev_dependencies:
   flutter_test:

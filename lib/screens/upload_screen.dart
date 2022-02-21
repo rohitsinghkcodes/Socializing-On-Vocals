@@ -98,7 +98,6 @@ class _UploadFileState extends State<UploadFile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 50,
         shape: const RoundedRectangleBorder(
@@ -181,13 +180,13 @@ class _UploadFileState extends State<UploadFile> {
                                 builder: (BuildContext context) =>
                                     AlertDialog(
                                       shape:  const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                      backgroundColor: const Color(0xFFDFB5FF),
+                                      // backgroundColor: const Color(0xFFDFB5FF),
                                       content:
                                       const SizedBox(
                                         height: 25.0,
                                         child: Center(child: Text(
                                             'File Uploaded Successfully',style: TextStyle(
-                                          color: Color(0xFF4B008B),
+                                          // color: Color(0xFF4B008B),
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500,
                                         ),),),
