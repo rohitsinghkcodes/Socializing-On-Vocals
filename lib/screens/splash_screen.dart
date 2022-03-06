@@ -11,7 +11,6 @@ class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _SplashScreenState();
   }
 }
@@ -19,7 +18,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     startTimer();
   }
@@ -45,6 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void startTimer() {
     Timer(const Duration(milliseconds: 1500), () async{
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      debugPrint('user token---${prefs.getString('loggedInUserToken')}');
       debugPrint('user id---${prefs.getString('loggedInUserId')}');
 
       navigateUser(); //It will redirect  after  1.5 seconds

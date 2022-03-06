@@ -1,8 +1,10 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
+import 'package:socializing_on_vocals/provider/theme_provider.dart';
 import 'package:socializing_on_vocals/screens/about_us_screen.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/welcome_screen.dart';
@@ -48,7 +50,7 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  // Method for redirecting the user to the profile page
+  // Method for redirecting the user to the profile_helper page
   void gotoProfilePage() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -73,7 +75,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
+        toolbarHeight: 60,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
@@ -88,100 +90,86 @@ class _SettingsState extends State<Settings> {
         child: Center(
           child: Column(
             children: [
-              Expanded(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(30),
-                    ),
-                    color: Color(0x1E8603F1),
-                  ),
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 10.0),
-                      child: ListView(
-                        children: ListTile.divideTiles(
-                          //          <-- ListTile.divideTiles
-                            context: context,
-                            tiles: [
-                              // GestureDetector(
-                              //   onTap: gotoProfilePage,
-                              //   child: const ListTile(
-                              //     title: Text('Profile'),
-                              //   ),
-                              // ),
-
-                              ListTile(
-                                trailing: Switch(
-                                  value: isSwitched,
-                                  activeColor: mainPurpleTheme,
-                                  activeTrackColor: darkTheme,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      isSwitched = value;
-                                      changeTheme();
-                                    });
-                                  },
-                                ),
-                                title: const Text('Dark Mode'),
-                              ),
-
-                              GestureDetector(
-                                onTap: () {
-                                  logoutUser();
-                                },
-                                child: const ListTile(
-                                  title: Text('Logout'),
-                                ),
-                              ),
-                            ]).toList(),
-                      )),
-                ),
-              ),
               const SizedBox(
                 height: 20,
               ),
               Expanded(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(30),
-                    ),
-                    color: Color(0x1E8603F1),
-                  ),
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 10.0),
-                      child: ListView(
-                        children: ListTile.divideTiles(
-                          //          <-- ListTile.divideTiles
-                            context: context,
-                            tiles: [
+                child: ListView(
+                  children: ListTile.divideTiles(
+                    //          <-- ListTile.divideTiles
+                      context: context,
+                      tiles: [
+                        GestureDetector(
+                          onTap: () {
+                            logoutUser();
+                          },
+                          child: const ListTile(
+                            title: Text('Log Out'),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, AboutUs.id);
+                          },
+                          child: const ListTile(
+                            title: Text('About Us'),
+                          ),
+                        ),
 
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, AboutUs.id);
-                                },
-                                child: const ListTile(
-                                  title: Text('About Us'),
-                                ),
-                              ),
+                        GestureDetector(
+                          onTap: null,
+                          child: const ListTile(
+                            title: Text('Privacy Policy'),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: null,
+                          child: const ListTile(
+                            title: Text('Terms and Conditions'),
+                          ),
+                        ),
 
-                              GestureDetector(
-                                onTap: null,
-                                child: const ListTile(
-                                  title: Text('Privacy Policy'),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: null,
-                                child: const ListTile(
-                                  title: Text('Terms and Conditions'),
-                                ),
-                              ),
 
-                            ]).toList(),
-                      )),
+                ListTile(
+                        trailing: Consumer<ThemeProvider>(
+                            builder: (context,provider,child) {
+                              return DropdownButton<String>(
+                                underline: const SizedBox(),
+                                borderRadius: BorderRadius.circular(20),
+                                value: provider.currentTheme,
+                                items: const [
+                                  //light dark system
+                                  DropdownMenuItem<String>(
+                                    value: 'light',
+                                    child: Text(
+                                      'Light',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ),
+                                  DropdownMenuItem<String>(
+                                    value: 'dark',
+                                    child: Text(
+                                      'Dark',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ),
+                                  DropdownMenuItem<String>(
+                                    value: 'system',
+                                    child: Text(
+                                      'System',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ),
+                                ], onChanged:(String?value){
+                                provider.changeTheme(value?? 'system');
+                              } ,);
+                            }
+                        ),
+                        title: const Text('Theme'),
+                      ),
+
+
+                      ]).toList(),
                 ),
               ),
             ],

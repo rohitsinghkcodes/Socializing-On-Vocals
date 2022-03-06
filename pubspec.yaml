@@ -18,14 +18,17 @@ dependencies:
   modal_progress_hud_nsn: ^0.1.0-nullsafety-0
   http: ^0.13.4
   shared_preferences: ^2.0.8
-  fluttertoast: ^8.0.8
-
+  fluttertoast: ^8.0.9
   cupertino_icons: ^1.0.2
   audioplayers: ^0.20.1
   file_picker: ^4.2.7
   curved_navigation_bar: ^1.0.1
   flutter_spinkit: ^5.1.0
   flutter_markdown: ^0.6.9
+  provider: ^6.0.2
+  marquee_text: ^2.5.0+1
+  multiavatar: ^0.1.5
+  flutter_svg: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -40,3 +43,7 @@ flutter:
 
   assets:
     - images/
+    - images/file3.png
+    - images/file4.png
+    - images/file2.png
+    - images/upload.png

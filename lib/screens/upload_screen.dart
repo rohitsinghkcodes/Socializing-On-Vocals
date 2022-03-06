@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socializing_on_vocals/components/rounded_button.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/helper/constants.dart';
@@ -33,7 +34,7 @@ class _UploadFileState extends State<UploadFile> {
   //Post request url
   String postUrl = "https://socializingonvocls.herokuapp.com/submit";
 
-  //explorer pick
+  //explorer pick or audio file selection
   void _openFileExplorer() async {
     _files = (await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -48,6 +49,9 @@ class _UploadFileState extends State<UploadFile> {
       setState(() {
         isAnyFileSelected = true;
       });
+
+      // //adding description value
+      // description = _files!.first.name;
 
       debugPrint('File path: ${_files!.first.path}');
     } else {
@@ -66,7 +70,11 @@ class _UploadFileState extends State<UploadFile> {
 
   //File Uploading
   Future<bool> fileUpload(String desc) async {
-    var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var headers = {'Content-Type': 'application/x-www-form-urlencoded',
+    'Authorization': 'bearer ${prefs.getString('loggedInUserToken')}'
+    };
 
     var request = http.MultipartRequest(
         'POST', Uri.parse(postUrl));
@@ -75,7 +83,9 @@ class _UploadFileState extends State<UploadFile> {
             'file', _files!.first.path.toString()));
 
     // description
-    request.fields.addAll({'filename': desc.toString()});
+    request.fields.addAll({'filename': desc.toString(),
+      'userid': prefs.getString('loggedInUserId').toString()
+    });
 
     //Adding headers
     request.headers.addAll(headers);
@@ -99,7 +109,7 @@ class _UploadFileState extends State<UploadFile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
+        toolbarHeight: 60,
         shape: const RoundedRectangleBorder(
 
           borderRadius: BorderRadius.vertical(
@@ -111,129 +121,159 @@ class _UploadFileState extends State<UploadFile> {
         centerTitle: true,
         title: const Text('Upload'),
       ),
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextFormField(
-                    controller: _controllerTEC,
-                    style: const TextStyle(color: Colors.black),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 4,
-                    decoration: kUploadFieldDecoration,
-                    onChanged: (value) {
-                      description = value;
-                    },
-                    validator: (value) {
-                      return descCheck(value!);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  RoundedButton(
-                    color: isAnyFileSelected
-                        ? greenButton
-                        : purpleButton,
-                    title:
-                        isAnyFileSelected ? _files!.first.name : "Select file",
-                    onPressed: _openFileExplorer,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  RoundedButton(
-                    color: mainPurpleTheme,
-                    title: "Upload",
-                    onPressed: () async {
-                      if (!isAnyFileSelected) {
-                        Fluttertoast.showToast(
-                            msg: "Please select any audio file!",
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.black,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      }
-
-
-                      if(fileSize() <= 3.0) {
-                        if (_formKey.currentState!.validate() &&
-                            _files!.first.path != null) {
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          try {
-                            bool uploadResponse = await fileUpload(description);
-                            if (uploadResponse) {
-                              showDialog<String>(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    AlertDialog(
-                                      shape:  const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                      // backgroundColor: const Color(0xFFDFB5FF),
-                                      content:
-                                      const SizedBox(
-                                        height: 25.0,
-                                        child: Center(child: Text(
-                                            'File Uploaded Successfully',style: TextStyle(
-                                          // color: Color(0xFF4B008B),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                        ),),),
-                                      ),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context, 'OK');
-                                            setState(() {
-                                              _controllerTEC.clear();
-                                              isAnyFileSelected = false;
-                                            });
-                                          },
-                                          child: const Text(
-                                            'OK',
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                              );
-                            } else {
-                              debugPrint('not uploaded');
-                            }
-                            setState(() {
-                              showSpinner = false;
-                            });
-                          } catch (e) {
-                            debugPrint(e.toString());
-                          }
-                        }
-                      }
-                      else{
-                        Fluttertoast.showToast(
-                          msg: "File size too big!\nPlease select file under 3MB",
-                          backgroundColor: Colors.black87,
-                          textColor: Colors.white,
-                          gravity: ToastGravity.BOTTOM,
-                          toastLength: Toast.LENGTH_LONG,
-                        );
-                      }
-                    },
-                  ),
-                ],
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            key: _formKey,
+            child:(showSpinner == true)
+                ? const Center(
+              child: SpinKitFoldingCube(
+                color: Color(0xFF8603F1),
+                size: 50.0,
               ),
+            )
+                :  Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: SizedBox(
+
+                      child: Image.asset('images/file4.png',color: Colors.white.withOpacity(0.75), colorBlendMode: BlendMode.modulate,),
+                    ),
+                  ),
+                ),
+                TextFormField(
+                  controller: _controllerTEC,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 6,
+                  style: const TextStyle(fontSize: 18.0),
+                  textAlign: TextAlign.center,
+                  decoration: kUploadFieldDecoration,
+                  onChanged: (value) {
+                    description = value;
+                  },
+                  validator: (value) {
+                    return descCheck(value!);
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+
+                    children: [
+                      RoundedButton(
+                        color: isAnyFileSelected
+                            ? greenButton
+                            : purpleButton,
+                        title:
+                        // isAnyFileSelected ? _files!.first.name : "Select",
+                        isAnyFileSelected ? "Selected" : "Select",
+                        onPressed: _openFileExplorer,
+                      ),
+                      const SizedBox(
+                        width: 25,
+                      ),
+                      RoundedButton(
+                        color: mainPurpleTheme,
+                        title: "Upload",
+                        onPressed: () async {
+
+                          if (!isAnyFileSelected) {
+                            Fluttertoast.showToast(
+                                msg: "Please select any audio file!",
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          }
+
+                          if(fileSize() <= 3.0) {
+                            if (_formKey.currentState!.validate() &&
+                                _files!.first.path != null) {
+                              setState(() {
+                                showSpinner = true;
+                              });
+
+                              try {
+                                bool uploadResponse = await fileUpload(description);
+                                if (uploadResponse) {
+                                  showDialog<String>(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                          shape:  const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                          // backgroundColor: const Color(0xFFDFB5FF),
+                                          content:
+                                          const SizedBox(
+                                            height: 25.0,
+                                            child: Center(child: Text(
+                                              'File Uploaded Successfully',style: TextStyle(
+                                              // color: Color(0xFF4B008B),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500,
+                                            ),),),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, 'OK');
+                                                setState(() {
+                                                  _controllerTEC.clear();
+                                                  isAnyFileSelected = false;
+                                                });
+                                              },
+                                              child: const Text(
+                                                'OK',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                  );
+                                } else {
+                                  debugPrint('not uploaded');
+                                }
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                              } catch (e) {
+                                debugPrint(e.toString());
+                              }
+                            }
+                          }
+                          else{
+                            Fluttertoast.showToast(
+                              msg: "File size too big!\nPlease select file under 3MB",
+                              backgroundColor: Colors.black87,
+                              textColor: Colors.white,
+                              gravity: ToastGravity.BOTTOM,
+                              toastLength: Toast.LENGTH_LONG,
+                            );
+                          }
+                        },
+                      ),
+
+                    ],
+
+                  ),
+                )
+               ,
+                const SizedBox(
+                  height: 30,
+                )
+              ],
+
             ),
           ),
         ),

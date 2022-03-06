@@ -1,9 +1,9 @@
+import 'package:socializing_on_vocals/components/auth_round_button.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
-import 'package:socializing_on_vocals/screens/sign_up.dart';
-import 'package:socializing_on_vocals/screens/signin_screen.dart';
+import 'package:socializing_on_vocals/screens/authentication/sign_up.dart';
+import 'package:socializing_on_vocals/screens/authentication/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:socializing_on_vocals/components/rounded_button.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const String id = 'welcome_screen';
@@ -86,7 +86,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             const SizedBox(
               height: 50.0,
             ),
-            RoundedButton(
+            AuthRoundedButton(
               color: purpleButton,
               title: 'Sign In',
               onPressed: () {
@@ -94,9 +94,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 Navigator.pushNamed(context, SignIn.id);
               },
             ),
-            RoundedButton(
+            AuthRoundedButton(
               color: redButton,
-              title: 'SIgn Up',
+              title: 'Sign Up',
 
               onPressed: () {
                 //Go to login screen.

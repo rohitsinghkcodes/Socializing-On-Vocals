@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
-
-
 
 const kTextFieldDecoration = InputDecoration(
   hintText: 'Enter your value.',
@@ -30,8 +26,8 @@ const kTextFieldDecoration = InputDecoration(
 //Field for upload description
 
 const kUploadFieldDecoration = InputDecoration(
-  hintText: 'Description',
-  hintStyle: TextStyle(color: Colors.grey),
+  hintText: 'Add Some Description',
+  hintStyle: TextStyle(color: Colors.grey,),
 
   // hintStyle: TextStyle(color: Colors.grey),
   contentPadding:
@@ -47,6 +43,6 @@ const kUploadFieldDecoration = InputDecoration(
   focusedBorder: OutlineInputBorder(
     borderSide:
     BorderSide(color: Color(0xFF795282), width: 2.5),
-    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+    borderRadius: BorderRadius.all(Radius.circular(25.0)),
   ),
 );

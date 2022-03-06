@@ -20,7 +20,7 @@ class _BottomNavState extends State<BottomNav> {
   int currPage = 0;
   final List<Widget> screens = [
      const HomeScreen(),
-    const ProfileScreen(),
+     const ProfileScreen(),
     const UploadFile(),
     const Settings(),
   ];

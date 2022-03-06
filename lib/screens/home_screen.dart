@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:multiavatar/multiavatar.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,9 +25,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   PageController pageController = PageController(initialPage: 0);
   bool isPlaying = true;
   bool showSpinner = false;
-  List<String> songList = [];
+  List<dynamic> songList = [];
+  int currentAudioNo = 0;
+  late String audioTitle = "hello";
   int playlistSize = 0;
-  Icon icon = const Icon(Icons.pause);
+  bool idDetailsLoaded = false;
+  Icon icon = const Icon(Icons.mic_rounded);
+
+  //For profile_helper SVG
+  late String svgCode;
 
   //For fetching the Playlist
   Future fetchPlaylist() async {
@@ -34,13 +42,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     try {
       if (response.statusCode == 200) {
         String data = response.body;
-        var songIds = jsonDecode(data);
 
-        List<String> list = [];
-        for(var id in songIds)
-        {
-          list.add(id.toString());
-        }
+        List<dynamic> list = await jsonDecode(data);
 
         //Setting playlist size i.e. no of songs available currently in db
         //Updating List of Songs
@@ -48,23 +51,22 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           songList = list;
           playlistSize = list.length;
           showSpinner = false;
-          icon = const Icon(Icons.pause);
+          idDetailsLoaded = true;
+          icon = const Icon(Icons.mic_rounded);
+          audioTitle = songList[currentAudioNo]['name'];
+          svgCode = multiavatar(songList[currentAudioNo]['userid']['_id']);
         });
 
         //Playing 1st audio in the starting
-        String playUrl = baseUrl + songList[0];
+        String playUrl = baseUrl + songList[0]["songid"];
         audioPlayer.play(playUrl);
-
       } else {
         debugPrint(response.reasonPhrase);
       }
-
     } catch (e) {
       debugPrint(e.toString());
     }
   }
-
-
 
   //Checking if audio is playing and perform task accordingly
   void isPlayingCheck() {
@@ -77,12 +79,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     } else {
       audioPlayer.resume();
       setState(() {
-        icon = const Icon(Icons.pause);
+        icon = const Icon(Icons.mic_rounded);
       });
       isPlaying = true;
     }
   }
-
 
   @override
   void initState() {
@@ -105,85 +106,126 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    if(state == AppLifecycleState.inactive)
-      {
-        audioPlayer.pause();
-        debugPrint('Paused');
-      }
-    else if(state == AppLifecycleState.resumed)
-      {
-        audioPlayer.resume();
-        debugPrint('Resumed');
-      }
+    if (state == AppLifecycleState.inactive) {
+      audioPlayer.pause();
+      debugPrint('Paused');
+    } else if (state == AppLifecycleState.resumed) {
+      audioPlayer.resume();
+      debugPrint('Resumed');
+    }
 
-    if(state == AppLifecycleState.paused)
-      {
-        audioPlayer.stop();
-        debugPrint('Stopped');
-      }
+    if (state == AppLifecycleState.paused) {
+      audioPlayer.stop();
+      debugPrint('Stopped');
+    }
 
-    if(state == AppLifecycleState.detached)
-      {
-        audioPlayer.stop();
-        debugPrint('Stopped');
-      }
-
+    if (state == AppLifecycleState.detached) {
+      audioPlayer.stop();
+      debugPrint('Stopped');
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        elevation: 0,
-        toolbarHeight: 0,
-        backgroundColor: mainPurpleTheme,
-        // title: const Text('SOV'),
-      ),
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: GestureDetector(
-          onTap: (){
-            isPlayingCheck();
-          },
-          child: RefreshIndicator(
-            onRefresh: fetchPlaylist,
-            triggerMode: RefreshIndicatorTriggerMode.onEdge,
-            strokeWidth: 4.0,
-            color: mainPurpleTheme,
-            child: PageView.builder(
-
-              controller: pageController,
-              scrollDirection: Axis.vertical,
-              itemCount: playlistSize,
-              onPageChanged: (audioNumber) async {
-                debugPrint(audioNumber.toString());
-                audioPlayer.stop();
-                //Resetting the pause/play option
-                isPlaying = true;
-                setState(() {
-                  icon = const Icon(Icons.pause);
-                });
-                String playUrl = baseUrl + songList[audioNumber];     //song specific url
-                audioPlayer.play(playUrl);    //for playing song/audio
-              },
-              itemBuilder: (context, position) {
-                return Center(
-                  child: FloatingActionButton(
-                    backgroundColor: mainPurpleTheme,
-                    child: icon,
-                    tooltip: "Play Music",
-                    onPressed: () {
-                      isPlayingCheck();
-                    },
-                  ),
-                );
-              },
-            ),
+        toolbarHeight: 60,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
           ),
         ),
+        backgroundColor: mainPurpleTheme,
+        centerTitle: true,
+        title: idDetailsLoaded == false
+            ? Container()
+            : GestureDetector(
+                //tap to visit profile_helper of artist
+                onTap: () {},
+                child: Row(
+                  children: [
+                    // avatar of the artist
+                    CircleAvatar(
+                      radius: 20,
+                      child: SvgPicture.string(svgCode),
+                    ),
+
+                    const SizedBox(width: 10),
+                    Text(
+                      songList[currentAudioNo]['userid']['name']
+                          .toString()
+                          .toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        // title: const Text('SOV'),
       ),
+      body: (showSpinner == true)
+          ? const Center(
+              child: SpinKitFoldingCube(
+                color: Color(0xFF8603F1),
+                size: 50.0,
+              ),
+            )
+          : GestureDetector(
+              onTap: () {
+                isPlayingCheck();
+              },
+              child: RefreshIndicator(
+                onRefresh: fetchPlaylist,
+                triggerMode: RefreshIndicatorTriggerMode.onEdge,
+                strokeWidth: 3.5,
+                color: mainPurpleTheme,
+                child: PageView.builder(
+                  controller: pageController,
+                  scrollDirection: Axis.vertical,
+                  itemCount: playlistSize,
+                  onPageChanged: (audioNumber) async {
+                    debugPrint(audioNumber.toString());
+                    audioPlayer.stop();
+                    //Resetting the pause/play option
+                    isPlaying = true;
+                    setState(() {
+                      icon = const Icon(Icons.mic_rounded);
+                      currentAudioNo = audioNumber;
+                      svgCode = multiavatar(
+                          songList[currentAudioNo]['userid']['_id']);
+                    });
+                    String playUrl = baseUrl +
+                        songList[audioNumber]['songid']; //song specific url
+                    audioPlayer.play(playUrl); //for playing song/audio
+                  },
+                  itemBuilder: (context, position) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(songList[currentAudioNo]['name']
+                            .toString()
+                            .toUpperCase()),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Center(
+                          child: FloatingActionButton(
+                            backgroundColor: mainPurpleTheme,
+                            child: icon,
+                            tooltip: "Play Music",
+                            onPressed: () {
+                              isPlayingCheck();
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
     );
   }
 }
