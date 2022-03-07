@@ -9,6 +9,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:multiavatar/multiavatar.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
 
+import 'Home Audio Artist/home_audio_artist_profile.dart';
+
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
 
@@ -112,6 +114,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     } else if (state == AppLifecycleState.resumed) {
       audioPlayer.resume();
       debugPrint('Resumed');
+
     }
 
     if (state == AppLifecycleState.paused) {
@@ -129,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 60,
+        toolbarHeight: 80,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
@@ -137,26 +140,40 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         ),
         backgroundColor: mainPurpleTheme,
         centerTitle: true,
+        titleTextStyle: const TextStyle(
+          letterSpacing: 1.5,
+        ),
         title: idDetailsLoaded == false
             ? Container()
             : GestureDetector(
                 //tap to visit profile_helper of artist
-                onTap: () {},
+                onTap: () {
+                  audioPlayer.pause();
+                  setState(() {
+                    icon = const Icon(Icons.play_arrow);
+                  });
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => HomeAudioArtistProfile(userId:songList[currentAudioNo]['userid']['_id'].toString()),
+                    ),
+                  );
+                },
                 child: Row(
                   children: [
                     // avatar of the artist
                     CircleAvatar(
-                      radius: 20,
+                      radius: 28,
                       child: SvgPicture.string(svgCode),
                     ),
 
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 15),
                     Text(
                       songList[currentAudioNo]['userid']['name']
                           .toString()
                           .toUpperCase(),
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],

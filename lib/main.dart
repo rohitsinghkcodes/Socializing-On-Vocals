@@ -4,6 +4,7 @@ import 'package:socializing_on_vocals/Navigation/bottom_nav.dart';
 import 'package:socializing_on_vocals/provider/theme_provider.dart';
 import 'package:socializing_on_vocals/screens/about_us_screen.dart';
 import 'package:socializing_on_vocals/screens/home_screen.dart';
+import 'package:socializing_on_vocals/screens/profile_helper/user_profile_audio_player.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/settings_screen.dart';
 import 'package:socializing_on_vocals/screens/authentication/sign_up.dart';

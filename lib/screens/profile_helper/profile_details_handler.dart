@@ -5,7 +5,7 @@ var userId = '';
 var name = '';
 var email = '';
 var phone = 0;
-var songs = [];
+var audioListPerUser = [];
 
 Future getUserById(String id) async {
   String baseUrl = 'https://socializingonvocls.herokuapp.com/api/user/';
@@ -19,8 +19,7 @@ Future getUserById(String id) async {
     name = data['name'];
     email = data['email'];
     phone = data['phone'];
-    songs = data['SongList'];
-    print(data);
+    audioListPerUser = data['SongList'];
   } else {
     print(response.reasonPhrase);
   }

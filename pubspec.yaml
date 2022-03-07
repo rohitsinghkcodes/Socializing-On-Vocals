@@ -43,7 +43,6 @@ flutter:
 
   assets:
     - images/
-    - images/file3.png
     - images/file4.png
     - images/file2.png
     - images/upload.png
