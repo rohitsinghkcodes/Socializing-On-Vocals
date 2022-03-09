@@ -189,6 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         onPressed: () {
                                           Navigator.pop(context);
                                           showDialog(
+                                            barrierDismissible: false,
                                             context: context,
                                             builder: (context) => AlertDialog(
                                               title: const Text("Edit"),
@@ -201,10 +202,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               ),
                                               actions: [
                                                 OutlinedButton(
-                                                  child: const Text(
-                                                    "Cancel",
-                                                  ),
+                                                  child: const Text("Cancel"),
                                                   onPressed: () {
+                                                    _controller.clear();   //clearing the text field when not pressed submit button to make the field empty for next use
                                                     Navigator.pop(context);
                                                   },
                                                 ),
@@ -275,8 +275,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 OutlinedButton(
                                                   child: const Text(
                                                     "No",
-                                                    style: TextStyle(
-                                                        color: Colors.white),
                                                   ),
                                                   onPressed: () {
                                                     Navigator.pop(context);
@@ -284,25 +282,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 ),
                                                 ElevatedButton(
                                                   child: const Text("Yes"),
+
                                                   onPressed: () async {
                                                     Navigator.pop(context);
-
                                                     setState(() {
                                                       isLoading = true;
                                                     });
-
-                                                    String bearerToken =
-                                                        userToken;
-                                                    String id =
-                                                        audioListPerUser[index]
-                                                            ['_id'];
-                                                    await deleteAudioById(
-                                                            userId,
-                                                            bearerToken,
-                                                            id)
-                                                        .then(
-                                                            (_) => fetchData());
-
+                                                    String bearerToken = userToken;
+                                                    String id = audioListPerUser[index]['_id'];
+                                                    await deleteAudioById(userId, bearerToken, id).then((_) => fetchData());
                                                     setState(() {
                                                       isLoading = false;
                                                     });

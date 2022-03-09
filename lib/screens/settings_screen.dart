@@ -29,20 +29,22 @@ class _SettingsState extends State<Settings> {
   void logoutUser() async {
     audioPlayer.stop();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Are you sure?'),
-        content: const Text('Do you want to exit the app'),
+        title: const Text('Log Out'),
+        content: const Text('Are you sure you want to log out?'),
         actions: <Widget>[
-          TextButton(
+          OutlinedButton(
             onPressed: () => Navigator.of(context).pop(false),
             child: const Text('No'),
           ),
-          TextButton(
-            onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                context, WelcomeScreen.id, (route) => false),
+          ElevatedButton(
+            onPressed: () {
+              prefs.clear();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, WelcomeScreen.id, (route) => false);
+            },
             child: const Text('Yes'),
           ),
         ],
@@ -68,7 +70,6 @@ class _SettingsState extends State<Settings> {
     } catch (e) {
       debugPrint(e.toString());
     }
-
   }
 
   @override
@@ -96,7 +97,7 @@ class _SettingsState extends State<Settings> {
               Expanded(
                 child: ListView(
                   children: ListTile.divideTiles(
-                    //          <-- ListTile.divideTiles
+                      //          <-- ListTile.divideTiles
                       context: context,
                       tiles: [
                         GestureDetector(
@@ -115,7 +116,6 @@ class _SettingsState extends State<Settings> {
                             title: Text('About Us'),
                           ),
                         ),
-
                         GestureDetector(
                           onTap: null,
                           child: const ListTile(
@@ -128,47 +128,44 @@ class _SettingsState extends State<Settings> {
                             title: Text('Terms and Conditions'),
                           ),
                         ),
-
-
-                ListTile(
-                        trailing: Consumer<ThemeProvider>(
-                            builder: (context,provider,child) {
-                              return DropdownButton<String>(
-                                underline: const SizedBox(),
-                                borderRadius: BorderRadius.circular(20),
-                                value: provider.currentTheme,
-                                items: const [
-                                  //light dark system
-                                  DropdownMenuItem<String>(
-                                    value: 'light',
-                                    child: Text(
-                                      'Light',
-                                      style: TextStyle(fontSize: 17),
-                                    ),
+                        ListTile(
+                          trailing: Consumer<ThemeProvider>(
+                              builder: (context, provider, child) {
+                            return DropdownButton<String>(
+                              underline: const SizedBox(),
+                              borderRadius: BorderRadius.circular(20),
+                              value: provider.currentTheme,
+                              items: const [
+                                //light dark system
+                                DropdownMenuItem<String>(
+                                  value: 'light',
+                                  child: Text(
+                                    'Light',
+                                    style: TextStyle(fontSize: 17),
                                   ),
-                                  DropdownMenuItem<String>(
-                                    value: 'dark',
-                                    child: Text(
-                                      'Dark',
-                                      style: TextStyle(fontSize: 17),
-                                    ),
+                                ),
+                                DropdownMenuItem<String>(
+                                  value: 'dark',
+                                  child: Text(
+                                    'Dark',
+                                    style: TextStyle(fontSize: 17),
                                   ),
-                                  DropdownMenuItem<String>(
-                                    value: 'system',
-                                    child: Text(
-                                      'System',
-                                      style: TextStyle(fontSize: 17),
-                                    ),
+                                ),
+                                DropdownMenuItem<String>(
+                                  value: 'system',
+                                  child: Text(
+                                    'System',
+                                    style: TextStyle(fontSize: 17),
                                   ),
-                                ], onChanged:(String?value){
-                                provider.changeTheme(value?? 'system');
-                              } ,);
-                            }
+                                ),
+                              ],
+                              onChanged: (String? value) {
+                                provider.changeTheme(value ?? 'system');
+                              },
+                            );
+                          }),
+                          title: const Text('Theme'),
                         ),
-                        title: const Text('Theme'),
-                      ),
-
-
                       ]).toList(),
                 ),
               ),

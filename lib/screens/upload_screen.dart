@@ -111,13 +111,11 @@ class _UploadFileState extends State<UploadFile> {
       appBar: AppBar(
         toolbarHeight: 60,
         shape: const RoundedRectangleBorder(
-
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
         ),
         backgroundColor: mainPurpleTheme,
-
         centerTitle: true,
         title: const Text('Upload'),
       ),
@@ -210,10 +208,10 @@ class _UploadFileState extends State<UploadFile> {
                                     context: context,
                                     builder: (BuildContext context) =>
                                         AlertDialog(
-                                          shape:  const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                          shape:  const RoundedRectangleBorder
+                                            (borderRadius: BorderRadius.all(Radius.circular(10.0),),),
                                           // backgroundColor: const Color(0xFFDFB5FF),
-                                          content:
-                                          const SizedBox(
+                                          content: const SizedBox(
                                             height: 25.0,
                                             child: Center(child: Text(
                                               'File Uploaded Successfully',style: TextStyle(
