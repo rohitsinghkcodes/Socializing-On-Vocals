@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socializing_on_vocals/Navigation/bottom_nav.dart';
 import 'package:socializing_on_vocals/components/auth_round_button.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/helper/constants.dart';
@@ -9,6 +8,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:socializing_on_vocals/helper/input_field_conditions.dart';
+import 'package:socializing_on_vocals/screens/home_screen.dart';
 
 class SignIn extends StatefulWidget {
   static const String id = 'login_screen';
@@ -161,7 +161,7 @@ class _SignInState extends State<SignIn> {
                           prefs.setString('loggedInUserId', userId);
 
                           Navigator.pushNamedAndRemoveUntil(
-                              context, BottomNav.id, (route) => false);
+                              context, HomeScreen.id, (route) => false);
                         } else {
                           //to clear the text form fields
                           formTextController1.clear();

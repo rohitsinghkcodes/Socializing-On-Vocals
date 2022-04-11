@@ -1,11 +1,10 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socializing_on_vocals/helper/colors.dart';
-import 'package:socializing_on_vocals/provider/theme_provider.dart';
-import 'package:socializing_on_vocals/screens/about_us_screen.dart';
+import 'package:socializing_on_vocals/app_details_section/privacy_policy.dart';
+import 'package:socializing_on_vocals/app_details_section/terms_and_conditions.dart';
+import 'package:socializing_on_vocals/app_details_section/about_us_screen.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/welcome_screen.dart';
 
@@ -74,102 +73,88 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 60,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20),
-          ),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Color(0xFF000000), Color(0xFF281640)],
         ),
-        backgroundColor: mainPurpleTheme,
-        centerTitle: true,
-        title: const Text('Settings'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 12.0),
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: ListView(
-                  children: ListTile.divideTiles(
-                      //          <-- ListTile.divideTiles
-                      context: context,
-                      tiles: [
-                        GestureDetector(
-                          onTap: () {
-                            logoutUser();
-                          },
-                          child: const ListTile(
-                            title: Text('Log Out'),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, AboutUs.id);
-                          },
-                          child: const ListTile(
-                            title: Text('About Us'),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: null,
-                          child: const ListTile(
-                            title: Text('Privacy Policy'),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: null,
-                          child: const ListTile(
-                            title: Text('Terms and Conditions'),
-                          ),
-                        ),
-                        ListTile(
-                          trailing: Consumer<ThemeProvider>(
-                              builder: (context, provider, child) {
-                            return DropdownButton<String>(
-                              underline: const SizedBox(),
-                              borderRadius: BorderRadius.circular(20),
-                              value: provider.currentTheme,
-                              items: const [
-                                //light dark system
-                                DropdownMenuItem<String>(
-                                  value: 'light',
-                                  child: Text(
-                                    'Light',
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                ),
-                                DropdownMenuItem<String>(
-                                  value: 'dark',
-                                  child: Text(
-                                    'Dark',
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                ),
-                                DropdownMenuItem<String>(
-                                  value: 'system',
-                                  child: Text(
-                                    'System',
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                ),
-                              ],
-                              onChanged: (String? value) {
-                                provider.changeTheme(value ?? 'system');
-                              },
-                            );
-                          }),
-                          title: const Text('Theme'),
-                        ),
-                      ]).toList(),
-                ),
-              ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF000000),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Center(child:  Text('S E T T ',style:  TextStyle(color: Colors.deepPurple,fontSize: 18,fontWeight: FontWeight.bold),)),
+              Center(child:  Text('I N G S',style:  TextStyle(fontSize: 18,fontWeight: FontWeight.bold),)),
             ],
+          ),
+          actions: [
+            Opacity(
+              opacity: 0,
+              child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: const Icon(Icons.ac_unit_rounded)),
+            ),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 12.0),
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: ListView
+                    (
+                    children: ListTile.divideTiles(
+                        //          <-- ListTile.divideTiles
+                        context: context,
+                        tiles: [
+
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, AboutUs.id);
+                            },
+                            child: const ListTile(
+                              title: Text('About Us'),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.pushNamed(context, PrivacyPolicy.id);
+                            },
+                            child: const ListTile(
+                              title: Text('Privacy Policy'),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.pushNamed(context, TermsAndConditions.id);
+                            },
+                            child: const ListTile(
+                              title: Text('Terms & Conditions'),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              logoutUser();
+                            },
+                            child: const ListTile(
+                              title: Text('Log Out'),
+                            ),
+                          ),
+                        ]).toList(),
+                  ),
+                ),
+                const Text('v2.0.0',style: TextStyle(color: Colors.white70),),     //app version
+              ],
+            ),
           ),
         ),
       ),

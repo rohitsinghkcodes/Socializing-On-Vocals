@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socializing_on_vocals/Navigation/bottom_nav.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
+import 'package:socializing_on_vocals/screens/home_screen.dart';
 import 'package:socializing_on_vocals/screens/welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -57,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (status) {
       // Navigation.pushReplacement(context, "/Home");
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => const BottomNav()));
+          MaterialPageRoute(builder: (BuildContext context) => const HomeScreen()));
     } else {
       Navigator.pushReplacement(
           context,

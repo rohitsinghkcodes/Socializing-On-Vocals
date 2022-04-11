@@ -46,3 +46,8 @@ const kUploadFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(25.0)),
   ),
 );
+
+
+//privacy policy and terms and conditions
+TextStyle headingStyle = const TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+TextStyle content = const TextStyle(fontSize: 14,color: Colors.white70);

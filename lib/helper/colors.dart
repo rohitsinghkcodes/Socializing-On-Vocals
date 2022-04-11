@@ -17,3 +17,9 @@ Color darkTheme = const  Color(0xFFB660FF);
 
 
 Color purplePlays = const Color(0xFF8D3CEE);
+
+//home buttons
+Color commentColor = const Color(0xff5eb161);
+Color likeColor = const Color(0xffff4c92);
+Color shareColor = const Color(0xff367fb1);
+
