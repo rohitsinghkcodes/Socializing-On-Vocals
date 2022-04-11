@@ -2,11 +2,13 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socializing_on_vocals/app_details_section/privacy_policy.dart';
-import 'package:socializing_on_vocals/app_details_section/terms_and_conditions.dart';
-import 'package:socializing_on_vocals/app_details_section/about_us_screen.dart';
+import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/welcome_screen.dart';
+
+import 'app_details_section/about_us_screen.dart';
+import 'app_details_section/privacy_policy.dart';
+import 'app_details_section/terms_and_conditions.dart';
 
 class Settings extends StatefulWidget {
   static const id = "settings_screen";
@@ -31,19 +33,22 @@ class _SettingsState extends State<Settings> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Log Out'),
+        backgroundColor: Colors.black45,
         content: const Text('Are you sure you want to log out?'),
         actions: <Widget>[
-          OutlinedButton(
+          ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => mainPurpleTheme)),
             onPressed: () => Navigator.of(context).pop(false),
             child: const Text('No'),
           ),
           ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => mainPurpleTheme)),
             onPressed: () {
               prefs.clear();
               Navigator.pushNamedAndRemoveUntil(
                   context, WelcomeScreen.id, (route) => false);
             },
+            // style: ButtonStyle(),
             child: const Text('Yes'),
           ),
         ],
@@ -51,7 +56,7 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  // Method for redirecting the user to the profile_helper page
+  // Method for redirecting the user to the profile_helper page : after logout
   void gotoProfilePage() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();

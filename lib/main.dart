@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:socializing_on_vocals/Navigation/bottom_nav.dart';
-import 'package:socializing_on_vocals/app_details_section/about_us_screen.dart';
+import 'package:socializing_on_vocals/screens/app_details_section/about_us_screen.dart';
+import 'package:socializing_on_vocals/screens/app_details_section/privacy_policy.dart';
+import 'package:socializing_on_vocals/screens/app_details_section/terms_and_conditions.dart';
 import 'package:socializing_on_vocals/screens/home_screen.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/settings_screen.dart';
 import 'package:socializing_on_vocals/screens/authentication/sign_up.dart';
 import 'package:socializing_on_vocals/screens/splash_screen.dart';
 import 'package:socializing_on_vocals/screens/upload_screen.dart';
-import 'app_details_section/privacy_policy.dart';
-import 'app_details_section/terms_and_conditions.dart';
 import 'screens/welcome_screen.dart';
 import 'package:socializing_on_vocals/screens/welcome_screen.dart';
 import 'package:socializing_on_vocals/screens/authentication/signin_screen.dart';

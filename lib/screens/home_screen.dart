@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:multiavatar/multiavatar.dart';
+import 'package:socializing_on_vocals/helper/backpress_check.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/settings_screen.dart';
@@ -171,281 +172,284 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF000000), Color(0xFF281640)],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF050009),
-          elevation: 0.0,
-          title: const Center(
-            child: Text(''),
+    return WillPopScope(
+      onWillPop: OnBackPressed,
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF000000), Color(0xFF281640)],
           ),
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              color: const Color(0xFF281640),
-              onSelected: handleClick,
-              itemBuilder: (BuildContext context) {
-                return {'👤   Profile', '🎙   Upload', '⚙️   Settings'}
-                    .map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(
-                      choice,
-                    ),
-                  );
-                }).toList();
-              },
-            ),
-          ],
         ),
-        body: (showSpinner == true)
-            ? const Center(
-                child: SpinKitFoldingCube(
-                  color: Color(0xFF8603F1),
-                  size: 50.0,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: const Color(0xFF050009),
+            elevation: 0.0,
+            title: const Center(
+              child: Text(''),
+            ),
+            actions: <Widget>[
+              PopupMenuButton<String>(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              )
-            : GestureDetector(
-                onDoubleTap: () {
-                  toggleIsLiked();
-                  Fluttertoast.showToast(
-                      msg: "Just pressed like button",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      backgroundColor: Colors.black45,
-                      textColor: Colors.white,
-                      fontSize: 16.0);
+                color: const Color(0xFF281640),
+                onSelected: handleClick,
+                itemBuilder: (BuildContext context) {
+                  return {'👤   Profile', '🎙   Upload', '⚙️   Settings'}
+                      .map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(
+                        choice,
+                      ),
+                    );
+                  }).toList();
                 },
-                onTap: () {
-                  isPlayingCheck();
-                },
-                child: RefreshIndicator(
-                  onRefresh: fetchPlaylist,
-                  triggerMode: RefreshIndicatorTriggerMode.onEdge,
-                  strokeWidth: 3.5,
-                  color: mainPurpleTheme,
-                  child: PageView.builder(
-                    controller: pageController,
-                    scrollDirection: Axis.vertical,
-                    itemCount: playlistSize,
-                    onPageChanged: (audioNumber) async {
-                      debugPrint(audioNumber.toString());
-                      audioPlayer.stop();
-                      //Resetting the pause/play option
-                      isPlaying = true;
-                      setState(() {
-                        icon = const Icon(Icons.mic_rounded);
-                        currentAudioNo = audioNumber;
-                        svgCode = multiavatar(
-                            songList[currentAudioNo]['userid']['_id']);
-                      });
-                      String playUrl = baseUrl +
-                          songList[audioNumber]['songid']; //song specific url
-                      audioPlayer.play(playUrl); //for playing song/audio
-                    },
-                    itemBuilder: (context, position) {
-                      return Column(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    toggleIsLiked();
-                                    Fluttertoast.showToast(
-                                        msg: "Just pressed like button",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black45,
-                                        textColor: Colors.white,
-                                        fontSize: 16.0);
-                                  },
-                                  child:
-                                  AnimateIcons(
-                                    startIcon: Icons.favorite_border_rounded,
-                                    endIcon: Icons.favorite_rounded,
-                                    controller: controllerIcon,
-                                    size: 30.0,
-                                    onStartIconPress: () {
-                                      // Clicked on Add Icon
-                                      return true;
-                                    },
-                                    onEndIconPress: () {
-                                      // Clicked on Close Icon
-                                      return true;
-                                    },
-                                    duration: const Duration(milliseconds: 500),
-                                    startIconColor: const Color(0xffff4c92),
-                                    endIconColor: const Color(0xffea095f),
-                                    clockwise: false,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Text(
-                                  '|',
-                                  style: TextStyle(
-                                      color: Color(0x20fffdfd), fontSize: 30),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Fluttertoast.showToast(
-                                        msg: "Just pressed share button",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black45,
-                                        textColor: Colors.white,
-                                        fontSize: 16.0);
-                                  },
-                                  child: const Icon(
-                                    Icons.share_rounded,
-                                    color: Color(0xff367fb1),
-                                    size: 30,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Text(
-                                  '|',
-                                  style: TextStyle(
-                                      color: Color(0x20fffdfd), fontSize: 30),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Fluttertoast.showToast(
-                                        msg: "Just pressed comment button",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black45,
-                                        textColor: Colors.white,
-                                        fontSize: 16.0);
-                                  },
-                                  child: const Icon(
-                                    CupertinoIcons.bubble_middle_bottom,
-                                    color: Color(0xff5eb161),
-                                    size: 30,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 6,
-                            child: Center(
-                              child: Column(
+              ),
+            ],
+          ),
+          body: (showSpinner == true)
+              ? const Center(
+                  child: SpinKitFoldingCube(
+                    color: Color(0xFF8603F1),
+                    size: 50.0,
+                  ),
+                )
+              : GestureDetector(
+                  onDoubleTap: () {
+                    toggleIsLiked();
+                    Fluttertoast.showToast(
+                        msg: "Just pressed like button",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.black45,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  },
+                  onTap: () {
+                    isPlayingCheck();
+                  },
+                  child: RefreshIndicator(
+                    onRefresh: fetchPlaylist,
+                    triggerMode: RefreshIndicatorTriggerMode.onEdge,
+                    strokeWidth: 3.5,
+                    color: mainPurpleTheme,
+                    child: PageView.builder(
+                      controller: pageController,
+                      scrollDirection: Axis.vertical,
+                      itemCount: playlistSize,
+                      onPageChanged: (audioNumber) async {
+                        debugPrint(audioNumber.toString());
+                        audioPlayer.stop();
+                        //Resetting the pause/play option
+                        isPlaying = true;
+                        setState(() {
+                          icon = const Icon(Icons.mic_rounded);
+                          currentAudioNo = audioNumber;
+                          svgCode = multiavatar(
+                              songList[currentAudioNo]['userid']['_id']);
+                        });
+                        String playUrl = baseUrl +
+                            songList[audioNumber]['songid']; //song specific url
+                        audioPlayer.play(playUrl); //for playing song/audio
+                      },
+                      itemBuilder: (context, position) {
+                        return Column(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    child: isPlaying
-                                        ? Image.network(
-                                            'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
-                                            height: 300.0,
-                                            width: 300.0,
-                                          )
-                                        : Stack(
-                                            children: [
-                                              ColorFiltered(
-                                                colorFilter: ColorFilter.mode(
-                                                    Colors.black
-                                                        .withOpacity(0.25),
-                                                    BlendMode.dstATop),
-                                                child: Image.network(
-                                                  'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
-                                                  height: 300.0,
-                                                  width: 300.0,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                  height: 300.0,
-                                                  width: 300.0,
-                                                  child: Center(
-                                                      child: Icon(
-                                                    Icons.play_arrow_rounded,
-                                                    size: 120,
-                                                    color: Colors.white70,
-                                                  )))
-                                            ],
-                                          ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      toggleIsLiked();
+                                      Fluttertoast.showToast(
+                                          msg: "Just pressed like button",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          backgroundColor: Colors.black45,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+                                    },
+                                    child:
+                                    AnimateIcons(
+                                      startIcon: Icons.favorite_border_rounded,
+                                      endIcon: Icons.favorite_rounded,
+                                      controller: controllerIcon,
+                                      size: 30.0,
+                                      onStartIconPress: () {
+                                        // Clicked on Add Icon
+                                        return true;
+                                      },
+                                      onEndIconPress: () {
+                                        // Clicked on Close Icon
+                                        return true;
+                                      },
+                                      duration: const Duration(milliseconds: 500),
+                                      startIconColor: const Color(0xffff4c92),
+                                      endIconColor: const Color(0xffea095f),
+                                      clockwise: false,
+                                    ),
                                   ),
                                   const SizedBox(
-                                    height: 25,
+                                    width: 10,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 30),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          songList[currentAudioNo]['name']
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 30),
-                                        ),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            audioPlayer.pause();
-                                            setState(() {
-                                              icon =
-                                                  const Icon(Icons.play_arrow);
-                                            });
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    HomeAudioArtistProfile(
-                                                        userId: songList[
-                                                                    currentAudioNo]
-                                                                [
-                                                                'userid']['_id']
-                                                            .toString()),
-                                              ),
-                                            );
-                                          },
-                                          child: Text(
-                                            songList[currentAudioNo]['userid']
-                                                    ['name']
-                                                .toString(),
-                                            style: const TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 16),
-                                          ),
-                                        ),
-                                      ],
+                                  const Text(
+                                    '|',
+                                    style: TextStyle(
+                                        color: Color(0x20fffdfd), fontSize: 30),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Fluttertoast.showToast(
+                                          msg: "Just pressed share button",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          backgroundColor: Colors.black45,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+                                    },
+                                    child: const Icon(
+                                      Icons.share_rounded,
+                                      color: Color(0xff367fb1),
+                                      size: 30,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Text(
+                                    '|',
+                                    style: TextStyle(
+                                        color: Color(0x20fffdfd), fontSize: 30),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Fluttertoast.showToast(
+                                          msg: "Just pressed comment button",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          backgroundColor: Colors.black45,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+                                    },
+                                    child: const Icon(
+                                      CupertinoIcons.bubble_middle_bottom,
+                                      color: Color(0xff5eb161),
+                                      size: 30,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    },
+                            Expanded(
+                              flex: 6,
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      child: isPlaying
+                                          ? Image.network(
+                                              'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
+                                              height: 300.0,
+                                              width: 300.0,
+                                            )
+                                          : Stack(
+                                              children: [
+                                                ColorFiltered(
+                                                  colorFilter: ColorFilter.mode(
+                                                      Colors.black
+                                                          .withOpacity(0.25),
+                                                      BlendMode.dstATop),
+                                                  child: Image.network(
+                                                    'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
+                                                    height: 300.0,
+                                                    width: 300.0,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                    height: 300.0,
+                                                    width: 300.0,
+                                                    child: Center(
+                                                        child: Icon(
+                                                      Icons.play_arrow_rounded,
+                                                      size: 120,
+                                                      color: Colors.white70,
+                                                    )))
+                                              ],
+                                            ),
+                                    ),
+                                    const SizedBox(
+                                      height: 25,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            songList[currentAudioNo]['name']
+                                                .toString(),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 30),
+                                          ),
+                                          const SizedBox(
+                                            height: 6,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              audioPlayer.pause();
+                                              setState(() {
+                                                icon =
+                                                    const Icon(Icons.play_arrow);
+                                              });
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HomeAudioArtistProfile(
+                                                          userId: songList[
+                                                                      currentAudioNo]
+                                                                  [
+                                                                  'userid']['_id']
+                                                              .toString()),
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              songList[currentAudioNo]['userid']
+                                                      ['name']
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }

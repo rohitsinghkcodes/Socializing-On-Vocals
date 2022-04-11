@@ -107,171 +107,187 @@ class _UploadFileState extends State<UploadFile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 60,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20),
-          ),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF000000), Color(0xFF281640)],
         ),
-        backgroundColor: mainPurpleTheme,
-        centerTitle: true,
-        title: const Text('Upload'),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child:(showSpinner == true)
-                ? const Center(
-              child: SpinKitFoldingCube(
-                color: Color(0xFF8603F1),
-                size: 50.0,
-              ),
-            )
-                :  Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                    child: SizedBox(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF000000),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Center(child:  Text('U P L ',style:  TextStyle(color: Colors.deepPurple,fontSize: 18,fontWeight: FontWeight.bold),)),
+              Center(child:  Text('O A D',style:  TextStyle(fontSize: 18,fontWeight: FontWeight.bold),)),
+            ],),
+          actions: [
+            Opacity(
+              opacity: 0,
+              child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: const Icon(Icons.ac_unit_rounded)),
+            ),
+          ],
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child:(showSpinner == true)
+                  ? const Center(
+                child: SpinKitFoldingCube(
+                  color: Color(0xFF8603F1),
+                  size: 50.0,
+                ),
+              )
+                  :  Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                      child: SizedBox(
 
-                      child: Image.asset('images/file4.png',color: Colors.white.withOpacity(0.75), colorBlendMode: BlendMode.modulate,),
+                        child: Image.asset('images/file4.png',color: Colors.white.withOpacity(0.75), colorBlendMode: BlendMode.modulate,),
+                      ),
                     ),
                   ),
-                ),
-                TextFormField(
-                  controller: _controllerTEC,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 6,
-                  style: const TextStyle(fontSize: 18.0),
-                  textAlign: TextAlign.center,
-                  decoration: kUploadFieldDecoration,
-                  onChanged: (value) {
-                    description = value;
-                  },
-                  validator: (value) {
-                    return descCheck(value!);
-                  },
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
+                  TextFormField(
+                    controller: _controllerTEC,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 6,
+                    style: const TextStyle(fontSize: 18.0),
+                    textAlign: TextAlign.center,
+                    decoration: kUploadFieldDecoration,
+                    onChanged: (value) {
+                      description = value;
+                    },
+                    validator: (value) {
+                      return descCheck(value!);
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
 
-                    children: [
-                      RoundedButton(
-                        color: isAnyFileSelected
-                            ? greenButton
-                            : purpleButton,
-                        title:
-                        // isAnyFileSelected ? _files!.first.name : "Select",
-                        isAnyFileSelected ? "Selected" : "Select",
-                        onPressed: _openFileExplorer,
-                      ),
-                      const SizedBox(
-                        width: 25,
-                      ),
-                      RoundedButton(
-                        color: mainPurpleTheme,
-                        title: "Upload",
-                        onPressed: () async {
+                      children: [
+                        RoundedButton(
+                          color: isAnyFileSelected
+                              ? greenButton
+                              : purpleButton,
+                          title:
+                          // isAnyFileSelected ? _files!.first.name : "Select",
+                          isAnyFileSelected ? "Selected" : "Select",
+                          onPressed: _openFileExplorer,
+                        ),
+                        const SizedBox(
+                          width: 25,
+                        ),
+                        RoundedButton(
+                          color: mainPurpleTheme,
+                          title: "Upload",
+                          onPressed: () async {
 
-                          if (!isAnyFileSelected) {
-                            Fluttertoast.showToast(
-                                msg: "Please select any audio file!",
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.black,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
-                          }
+                            if (!isAnyFileSelected) {
+                              Fluttertoast.showToast(
+                                  msg: "Please select any audio file!",
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                            }
 
-                          if(fileSize() <= 3.0) {
-                            if (_formKey.currentState!.validate() &&
-                                _files!.first.path != null) {
-                              setState(() {
-                                showSpinner = true;
-                              });
-
-                              try {
-                                bool uploadResponse = await fileUpload(description);
-                                if (uploadResponse) {
-                                  showDialog<String>(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        AlertDialog(
-                                          shape:  const RoundedRectangleBorder
-                                            (borderRadius: BorderRadius.all(Radius.circular(10.0),),),
-                                          // backgroundColor: const Color(0xFFDFB5FF),
-                                          content: const SizedBox(
-                                            height: 25.0,
-                                            child: Center(child: Text(
-                                              'File Uploaded Successfully',style: TextStyle(
-                                              // color: Color(0xFF4B008B),
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w500,
-                                            ),),),
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context, 'OK');
-                                                setState(() {
-                                                  _controllerTEC.clear();
-                                                  isAnyFileSelected = false;
-                                                });
-                                              },
-                                              child: const Text(
-                                                'OK',
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                  );
-                                } else {
-                                  debugPrint('not uploaded');
-                                }
+                            if(fileSize() <= 3.0) {
+                              if (_formKey.currentState!.validate() &&
+                                  _files!.first.path != null) {
                                 setState(() {
-                                  showSpinner = false;
+                                  showSpinner = true;
                                 });
-                              } catch (e) {
-                                debugPrint(e.toString());
+
+                                try {
+                                  bool uploadResponse = await fileUpload(description);
+                                  if (uploadResponse) {
+                                    showDialog<String>(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                            shape:  const RoundedRectangleBorder
+                                              (borderRadius: BorderRadius.all(Radius.circular(10.0),),),
+                                            // backgroundColor: const Color(0xFFDFB5FF),
+                                            content: const SizedBox(
+                                              height: 25.0,
+                                              child: Center(child: Text(
+                                                'File Uploaded Successfully',style: TextStyle(
+                                                // color: Color(0xFF4B008B),
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500,
+                                              ),),),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context, 'OK');
+                                                  setState(() {
+                                                    _controllerTEC.clear();
+                                                    isAnyFileSelected = false;
+                                                  });
+                                                },
+                                                child: const Text(
+                                                  'OK',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                    );
+                                  } else {
+                                    debugPrint('not uploaded');
+                                  }
+                                  setState(() {
+                                    showSpinner = false;
+                                  });
+                                } catch (e) {
+                                  debugPrint(e.toString());
+                                }
                               }
                             }
-                          }
-                          else{
-                            Fluttertoast.showToast(
-                              msg: "File size too big!\nPlease select file under 3MB",
-                              backgroundColor: Colors.black87,
-                              textColor: Colors.white,
-                              gravity: ToastGravity.BOTTOM,
-                              toastLength: Toast.LENGTH_LONG,
-                            );
-                          }
-                        },
-                      ),
+                            else{
+                              Fluttertoast.showToast(
+                                msg: "File size too big!\nPlease select file under 3MB",
+                                backgroundColor: Colors.black87,
+                                textColor: Colors.white,
+                                gravity: ToastGravity.BOTTOM,
+                                toastLength: Toast.LENGTH_LONG,
+                              );
+                            }
+                          },
+                        ),
 
-                    ],
+                      ],
 
-                  ),
-                )
-               ,
-                const SizedBox(
-                  height: 30,
-                )
-              ],
+                    ),
+                  )
+                 ,
+                  const SizedBox(
+                    height: 30,
+                  )
+                ],
 
+              ),
             ),
           ),
         ),
