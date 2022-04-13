@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   AudioPlayer audioPlayer = AudioPlayer();
   PageController pageController = PageController(initialPage: 0);
   bool isPlaying = true;
-  bool isLiked  = false;
+  bool isLiked = false;
   bool showSpinner = false;
   List<dynamic> songList = [];
   int currentAudioNo = 0;
@@ -134,13 +134,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-  void toggleIsLiked()
-  {
+  void toggleIsLiked() {
     if (controllerIcon.isStart()) {
-  controllerIcon.animateToEnd();
-  } else if (controllerIcon.isEnd()) {
-  controllerIcon.animateToStart();
-  }
+      controllerIcon.animateToEnd();
+    } else if (controllerIcon.isEnd()) {
+      controllerIcon.animateToStart();
+    }
   }
 
   void handleClick(String value) {
@@ -221,16 +220,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               : GestureDetector(
                   onDoubleTap: () {
                     toggleIsLiked();
-                    Fluttertoast.showToast(
-                        msg: "Just pressed like button",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.black45,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-                  },
-                  onTap: () {
-                    isPlayingCheck();
                   },
                   child: RefreshIndicator(
                     onRefresh: fetchPlaylist,
@@ -275,8 +264,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                           textColor: Colors.white,
                                           fontSize: 16.0);
                                     },
-                                    child:
-                                    AnimateIcons(
+                                    child: AnimateIcons(
                                       startIcon: Icons.favorite_border_rounded,
                                       endIcon: Icons.favorite_rounded,
                                       controller: controllerIcon,
@@ -289,7 +277,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         // Clicked on Close Icon
                                         return true;
                                       },
-                                      duration: const Duration(milliseconds: 500),
+                                      duration:
+                                          const Duration(milliseconds: 500),
                                       startIconColor: const Color(0xffff4c92),
                                       endIconColor: const Color(0xffea095f),
                                       clockwise: false,
@@ -357,38 +346,47 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               child: Center(
                                 child: Column(
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      child: isPlaying
-                                          ? Image.network(
-                                              'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
-                                              height: 300.0,
-                                              width: 300.0,
-                                            )
-                                          : Stack(
-                                              children: [
-                                                ColorFiltered(
-                                                  colorFilter: ColorFilter.mode(
-                                                      Colors.black
-                                                          .withOpacity(0.25),
-                                                      BlendMode.dstATop),
-                                                  child: Image.network(
-                                                    'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
-                                                    height: 300.0,
-                                                    width: 300.0,
+                                    GestureDetector(
+                                      onTap: () {
+                                        isPlayingCheck();
+                                      },
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        child: isPlaying
+                                            ? Image.network(
+                                                'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
+                                                height: 300.0,
+                                                width: 300.0,
+                                              )
+                                            : Stack(
+                                                children: [
+                                                  ColorFiltered(
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                            Colors.black
+                                                                .withOpacity(
+                                                                    0.25),
+                                                            BlendMode.dstATop),
+                                                    child: Image.network(
+                                                      'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
+                                                      height: 300.0,
+                                                      width: 300.0,
+                                                    ),
                                                   ),
-                                                ),
-                                                const SizedBox(
-                                                    height: 300.0,
-                                                    width: 300.0,
-                                                    child: Center(
-                                                        child: Icon(
-                                                      Icons.play_arrow_rounded,
-                                                      size: 120,
-                                                      color: Colors.white70,
-                                                    )))
-                                              ],
-                                            ),
+                                                  const SizedBox(
+                                                      height: 300.0,
+                                                      width: 300.0,
+                                                      child: Center(
+                                                          child: Icon(
+                                                        Icons
+                                                            .play_arrow_rounded,
+                                                        size: 120,
+                                                        color: Colors.white70,
+                                                      )))
+                                                ],
+                                              ),
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 25,
@@ -396,38 +394,36 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 30),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            songList[currentAudioNo]['name']
-                                                .toString(),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 30),
-                                          ),
-                                          const SizedBox(
-                                            height: 6,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              audioPlayer.pause();
-                                              setState(() {
-                                                icon =
-                                                    const Icon(Icons.play_arrow);
-                                              });
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      HomeAudioArtistProfile(
-                                                          userId: songList[
-                                                                      currentAudioNo]
-                                                                  [
-                                                                  'userid']['_id']
-                                                              .toString()),
-                                                ),
-                                              );
-                                            },
-                                            child: Text(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          audioPlayer.pause();
+                                          setState(() {
+                                            icon = const Icon(Icons.play_arrow);
+                                          });
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HomeAudioArtistProfile(
+                                                      userId: songList[
+                                                                  currentAudioNo]
+                                                              ['userid']['_id']
+                                                          .toString()),
+                                            ),
+                                          );
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              songList[currentAudioNo]['name']
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 30),
+                                            ),
+                                            const SizedBox(
+                                              height: 6,
+                                            ),
+                                            Text(
                                               songList[currentAudioNo]['userid']
                                                       ['name']
                                                   .toString(),
@@ -435,8 +431,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                   color: Colors.grey,
                                                   fontSize: 16),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
