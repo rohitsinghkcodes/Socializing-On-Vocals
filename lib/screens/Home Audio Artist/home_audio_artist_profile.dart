@@ -81,9 +81,12 @@ class _HomeAudioArtistProfileState extends State<HomeAudioArtistProfile> {
                   borderRadius: BorderRadius.circular(30.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: returnBgProfile(),
+                      color: returnBgProfile(userId),
                     ),
-                    child: SvgPicture.string(svgCode),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+                      child: SvgPicture.string(svgCode),
+                    ),
                     height: 90,
                     width: 90,
                   ),
