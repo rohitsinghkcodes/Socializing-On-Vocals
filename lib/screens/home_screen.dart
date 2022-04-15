@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:audioplayers/audioplayers.dart';
 import 'package:multiavatar/multiavatar.dart';
 import 'package:socializing_on_vocals/helper/backpress_check.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
+import 'package:socializing_on_vocals/helper/initializations.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/settings_screen.dart';
 import 'package:socializing_on_vocals/screens/upload_screen.dart';
@@ -27,19 +27,43 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final String baseUrl = "https://socializingonvocls.herokuapp.com/audio/";
 
-  AudioPlayer audioPlayer = AudioPlayer();
-  PageController pageController = PageController(initialPage: 0);
-  bool isPlaying = true;
-  bool isLiked = false;
-  bool showSpinner = false;
-  List<dynamic> songList = [];
-  int currentAudioNo = 0;
-  late String audioTitle = "hello";
-  int playlistSize = 0;
-  bool idDetailsLoaded = false;
-  Icon icon = const Icon(Icons.mic_rounded);
 
-  AnimateIconController controllerIcon = AnimateIconController();
+  void initPlayer(){
+
+    audioPlayer.onDurationChanged.listen((Duration d) {
+      setState(() => duration = d);
+    },);
+
+    audioPlayer.onAudioPositionChanged.listen((Duration  p){
+    setState(() => position = p);
+  });
+  }
+
+  void seekToSecond(int second){
+    Duration newDuration = Duration(seconds: second);
+    audioPlayer.seek(newDuration);
+  }
+
+  Widget slider() {
+    return SliderTheme(
+      data: SliderTheme.of(context).copyWith(
+        trackHeight: 2,
+        thumbShape: SliderComponentShape.noOverlay,   //removing thumb shape
+      ),
+      child: Slider(
+        activeColor: const Color(0xFF573192),
+          inactiveColor: Colors.black45  ,
+          value: position.inSeconds.toDouble(),
+          min: 0.0,
+          max: duration.inSeconds.toDouble(),
+          onChanged: (double value) {
+            setState(() {
+              seekToSecond(value.toInt());
+              value = value;
+            });}),
+    );
+  }
+
 
   //For profile_helper SVG
   late String svgCode;
@@ -102,6 +126,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     setState(() {
       showSpinner = true;
     });
+    initPlayer();
   }
 
   @override
@@ -388,8 +413,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                               ),
                                       ),
                                     ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 35),
+                                      child: slider(),
+                                    ),
                                     const SizedBox(
-                                      height: 25,
+                                      height: 10,
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
