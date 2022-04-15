@@ -74,6 +74,7 @@ class _UserProfileAudioPlayerState extends State<UserProfileAudioPlayer> with Wi
       showSpinner = true;
       svgCode = multiavatar(userId, trBackground: true);
     });
+    position = const Duration(seconds: 0);
     initPlayer();
   }
 
@@ -245,6 +246,7 @@ class _UserProfileAudioPlayerState extends State<UserProfileAudioPlayer> with Wi
               //Resetting the pause/play option
               isPlaying = true;
               setState(() {
+                position = const Duration(seconds: 0);
                 icon = const Icon(Icons.mic_rounded);
                 currentAudioNo = audioNumber;
               });

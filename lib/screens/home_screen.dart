@@ -126,6 +126,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     setState(() {
       showSpinner = true;
     });
+    position = const Duration(seconds: 0);
     initPlayer();
   }
 
@@ -170,23 +171,23 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void moreOptClickListener(String value) {
     switch (value) {
       case '👤   Profile':
-        audioPlayer.pause();
         setState(() {
+        audioPlayer.pause();
           icon = const Icon(Icons.play_arrow);
         });
         Navigator.pushNamed(context, ProfileScreen.id);
         break;
       case '🎙   Upload':
-        audioPlayer.pause();
         setState(() {
+        audioPlayer.pause();
           icon = const Icon(Icons.play_arrow);
         });
         Navigator.pushNamed(context, UploadFile.id);
         break;
 
       case '⚙️   Settings':
-        audioPlayer.pause();
         setState(() {
+        audioPlayer.pause();
           icon = const Icon(Icons.play_arrow);
         });
         Navigator.pushNamed(context, Settings.id);
@@ -261,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         //Resetting the pause/play option
                         isPlaying = true;
                         setState(() {
-
+                          position = const Duration(seconds: 0);
                           icon = const Icon(Icons.mic_rounded);
                           currentAudioNo = audioNumber;
                           svgCode = multiavatar(
