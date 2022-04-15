@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:socializing_on_vocals/Navigation/bottom_nav.dart';
 import 'package:socializing_on_vocals/screens/app_details_section/about_us_screen.dart';
 import 'package:socializing_on_vocals/screens/app_details_section/privacy_policy.dart';
 import 'package:socializing_on_vocals/screens/app_details_section/terms_and_conditions.dart';
@@ -34,7 +33,6 @@ class Sov extends StatelessWidget {
             SignUp.id: (context) => const SignUp(),
             HomeScreen.id: (context) =>  const HomeScreen(),
             UploadFile.id: (context) => const UploadFile(),
-            BottomNav.id: (context) => const BottomNav(),
             Settings.id: (context) => const Settings(),
             ProfileScreen.id: (context) => const ProfileScreen(),
             AboutUs.id: (context) => const AboutUs(),

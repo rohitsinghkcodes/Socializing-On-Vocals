@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:multiavatar/multiavatar.dart';
 import 'package:socializing_on_vocals/helper/backpress_check.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
-import 'package:socializing_on_vocals/helper/initializations.dart';
+import 'package:socializing_on_vocals/helper/home_screen_helper/initializations.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/settings_screen.dart';
 import 'package:socializing_on_vocals/screens/upload_screen.dart';
@@ -167,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-  void handleClick(String value) {
+  void moreOptClickListener(String value) {
     switch (value) {
       case '👤   Profile':
         audioPlayer.pause();
@@ -220,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 color: const Color(0xFF281640),
-                onSelected: handleClick,
+                onSelected: moreOptClickListener,
                 itemBuilder: (BuildContext context) {
                   return {'👤   Profile', '🎙   Upload', '⚙️   Settings'}
                       .map((String choice) {
@@ -261,6 +261,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         //Resetting the pause/play option
                         isPlaying = true;
                         setState(() {
+
                           icon = const Icon(Icons.mic_rounded);
                           currentAudioNo = audioNumber;
                           svgCode = multiavatar(
