@@ -66,150 +66,159 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: mainPurpleTheme,
-      body: ModalProgressHUD(
-        //progress indicator color
-        progressIndicator: const CircularProgressIndicator(
-          valueColor:AlwaysStoppedAnimation<Color>(Colors.white),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF0C0513), Color(0xFF170024), Color(0xFF3A254C),],
         ),
-        inAsyncCall: showSpinner,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Flexible(
-                child: Hero(
-                  tag: 'logo',
-                  child: SizedBox(
-                    height: 200.0,
-                    child: Image.asset('images/logo.png'),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: ModalProgressHUD(
+          //progress indicator color
+          progressIndicator: const CircularProgressIndicator(
+            valueColor:AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+          inAsyncCall: showSpinner,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Flexible(
+                  child: Hero(
+                    tag: 'logo',
+                    child: SizedBox(
+                      height: 200.0,
+                      child: Image.asset('images/logo.png'),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 48.0,
-              ),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-
-                    //Name
-                    TextFormField(
-                      keyboardType: TextInputType.name,
-                      style: const TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                      onChanged: (value) {
-                        //Do something with the user input.
-                        name = value;
-                      },
-                      decoration:
-                      kTextFieldDecoration.copyWith(hintText: 'Enter your name'),
-                      validator: (value) {
-                        return nameCheck(value!);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 8.0,
-                    ),
-                    //Phone Number
-                    TextFormField(
-                      keyboardType: TextInputType.number,
-                      style: const TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                      onChanged: (value) {
-                        //Do something with the user input.
-                        phone = value;
-                      },
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: 'Enter your phone no'),
-                      validator: (value) {
-                        return phoneCheck(value!);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 8.0,
-                    ),
-                    //Email
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                      onChanged: (value) {
-                        //Do something with the user input.
-                        email = value;
-                      },
-                      decoration:
-                      kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
-                      validator: (value) {
-                        return emailCheck(value!);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 8.0,
-                    ),
-                    //Password
-                    TextFormField(
-                      obscureText: true,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.white),
-                      onChanged: (value) {
-                        //Do something with the user input.
-                        password = value;
-                      },
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: 'Enter your password'),
-                      validator: (value){
-                        return passwordCheck(value!);
-                      },
-
-                    ),
-                  ],
+                const SizedBox(
+                  height: 48.0,
                 ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+
+                      //Name
+                      TextFormField(
+                        keyboardType: TextInputType.name,
+                        style: const TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                        onChanged: (value) {
+                          //Do something with the user input.
+                          name = value;
+                        },
+                        decoration:
+                        kTextFieldDecoration.copyWith(hintText: 'Enter your name'),
+                        validator: (value) {
+                          return nameCheck(value!);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 8.0,
+                      ),
+                      //Phone Number
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        style: const TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                        onChanged: (value) {
+                          //Do something with the user input.
+                          phone = value;
+                        },
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: 'Enter your phone no'),
+                        validator: (value) {
+                          return phoneCheck(value!);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 8.0,
+                      ),
+                      //Email
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                        onChanged: (value) {
+                          //Do something with the user input.
+                          email = value;
+                        },
+                        decoration:
+                        kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
+                        validator: (value) {
+                          return emailCheck(value!);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 8.0,
+                      ),
+                      //Password
+                      TextFormField(
+                        obscureText: true,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.white),
+                        onChanged: (value) {
+                          //Do something with the user input.
+                          password = value;
+                        },
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: 'Enter your password'),
+                        validator: (value){
+                          return passwordCheck(value!);
+                        },
+
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
 
 
 
-              AuthRoundedButton(
-                color: redButton,
-                title: 'Sign Up',
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      showSpinner = true;
-                    });
-
-                    try {
-                      bool newToken = await signUp(email, password);
-                      if (newToken) {
-                        // Navigator.pushNamed(context,SignIn.id);
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, SignIn.id, (route) => false);
-                      } else {
-                        debugPrint("error in registration");
-                        Fluttertoast.showToast(
-                          msg: "Invalid User Details!\nPlease try again.",
-                          backgroundColor: Colors.black87,
-                          textColor: Colors.white,
-                          gravity: ToastGravity.BOTTOM,
-                          toastLength: Toast.LENGTH_LONG,
-                        );
-                      }
+                AuthRoundedButton(
+                  color: redButton,
+                  title: 'Sign Up',
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
                       setState(() {
-                        showSpinner = false;
+                        showSpinner = true;
                       });
-                    } catch (e) {
-                      debugPrint(e.toString());
+
+                      try {
+                        bool newToken = await signUp(email, password);
+                        if (newToken) {
+                          // Navigator.pushNamed(context,SignIn.id);
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, SignIn.id, (route) => false);
+                        } else {
+                          debugPrint("error in registration");
+                          Fluttertoast.showToast(
+                            msg: "Invalid User Details!\nPlease try again.",
+                            backgroundColor: Colors.black87,
+                            textColor: Colors.white,
+                            gravity: ToastGravity.BOTTOM,
+                            toastLength: Toast.LENGTH_LONG,
+                          );
+                        }
+                        setState(() {
+                          showSpinner = false;
+                        });
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      }
                     }
-                  }
-                },),
-            ],
+                  },),
+              ],
+            ),
           ),
         ),
       ),

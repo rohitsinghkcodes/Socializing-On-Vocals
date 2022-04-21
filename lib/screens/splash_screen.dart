@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/screens/home_screen.dart';
 import 'package:socializing_on_vocals/screens/welcome_screen.dart';
 
@@ -24,24 +23,40 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: mainPurpleTheme,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              child: Image.asset('images/logo.png'),
-              height: 180,
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF000000), Color(0xFF281640)],
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Image.asset('images/logo.png'),
+                    height: 180,
+                  ),
+                ),
+                const Text('BY SOV',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white54),),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
   void startTimer() {
-    Timer(const Duration(milliseconds: 1500), () async{
+    Timer(const Duration(milliseconds: 1500), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       debugPrint('user token---${prefs.getString('loggedInUserToken')}');
       debugPrint('user id---${prefs.getString('loggedInUserId')}');
@@ -56,8 +71,10 @@ class _SplashScreenState extends State<SplashScreen> {
     debugPrint(status.toString());
     if (status) {
       // Navigation.pushReplacement(context, "/Home");
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => const HomeScreen()));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => const HomeScreen()));
     } else {
       Navigator.pushReplacement(
           context,

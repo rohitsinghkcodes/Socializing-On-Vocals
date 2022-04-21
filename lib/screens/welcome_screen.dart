@@ -47,63 +47,72 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // backgroundColor: Color(0xFF180015),
-      backgroundColor:  mainPurpleTheme,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                Hero(
-                  tag: 'logo',
-                  child: SizedBox(
-                    child: Image.asset('images/logo.png'),
-                    height: 180.0,
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF0C0513), Color(0xFF170024), Color(0xFF3A254C),],
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        // backgroundColor: Color(0xFF180015),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Hero(
+                    tag: 'logo',
+                    child: SizedBox(
+                      child: Image.asset('images/logo.png'),
+                      height: 180.0,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Center(
-                  child: AnimatedTextKit(
-                    animatedTexts: [
-                      WavyAnimatedText(
-                        'SOCIALIZING ON VOCALS',
-                        // textAlign: TextAlign.center,
-                        textStyle: const TextStyle(
-                          fontSize: 27.0,
-                          color: Color(0xFFD5A5FF),
-                          fontWeight: FontWeight.w900,
+                  const SizedBox(height: 16),
+                  Center(
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        WavyAnimatedText(
+                          'SOCIALIZING ON VOCALS',
+                          // textAlign: TextAlign.center,
+                          textStyle: const TextStyle(
+                            fontSize: 27.0,
+                            color: Color(0xFFD5A5FF),
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 50.0,
-            ),
-            AuthRoundedButton(
-              color: purpleButton,
-              title: 'Sign In',
-              onPressed: () {
-                //Go to login screen.
-                Navigator.pushNamed(context, SignIn.id);
-              },
-            ),
-            AuthRoundedButton(
-              color: redButton,
-              title: 'Sign Up',
+                ],
+              ),
+              const SizedBox(
+                height: 50.0,
+              ),
+              AuthRoundedButton(
+                color: purpleButton,
+                title: 'Sign In',
+                onPressed: () {
+                  //Go to login screen.
+                  Navigator.pushNamed(context, SignIn.id);
+                },
+              ),
+              AuthRoundedButton(
+                color: redButton,
+                title: 'Sign Up',
 
-              onPressed: () {
-                //Go to login screen.
-                Navigator.pushNamed(context, SignUp.id);
-              },
-            ),
-          ],
+                onPressed: () {
+                  //Go to login screen.
+                  Navigator.pushNamed(context, SignUp.id);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

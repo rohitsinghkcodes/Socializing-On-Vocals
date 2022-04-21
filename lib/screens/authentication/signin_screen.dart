@@ -67,126 +67,135 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: mainPurpleTheme,
-      body: ModalProgressHUD(
-        //progress indicator color
-        progressIndicator: const CircularProgressIndicator(
-          valueColor:AlwaysStoppedAnimation<Color>(Colors.white),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Color(0xFF0C0513), Color(0xFF170024), Color(0xFF3A254C),],
         ),
-        inAsyncCall: showSpinner,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Flexible(
-                child: Hero(
-                  tag: 'logo',
-                  child: SizedBox(
-                    height: 200.0,
-                    child: Image.asset('images/logo.png'),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: ModalProgressHUD(
+          //progress indicator color
+          progressIndicator: const CircularProgressIndicator(
+            valueColor:AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+          inAsyncCall: showSpinner,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Flexible(
+                  child: Hero(
+                    tag: 'logo',
+                    child: SizedBox(
+                      height: 200.0,
+                      child: Image.asset('images/logo.png'),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 48.0,
-              ),
-              Form(
-                key: _formKey,
-                child: Column
-                  (
-                  children: [
-                    TextFormField(
-                      controller: formTextController1,
-                      keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                      onChanged: (value) {
-                        //Do something with the user input.
-                        setState(() {
-                          email = value;
-                        });
-                      },
-                      decoration:
-                      kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
-                      validator: (value) {
-                        return emailCheck(value!);
-                      }
-                    ),
-                    const SizedBox(
-                      height: 8.0,
-                    ),
-                    TextFormField(
-                      controller: formTextController2,
-                        obscureText: true,
+                const SizedBox(
+                  height: 48.0,
+                ),
+                Form(
+                  key: _formKey,
+                  child: Column
+                    (
+                    children: [
+                      TextFormField(
+                        controller: formTextController1,
+                        keyboardType: TextInputType.emailAddress,
                         style: const TextStyle(color: Colors.white),
                         textAlign: TextAlign.center,
                         onChanged: (value) {
                           //Do something with the user input.
                           setState(() {
-                            password = value;
+                            email = value;
                           });
                         },
-                        decoration: kTextFieldDecoration.copyWith(
-                            hintText: 'Enter your password'),
-                      validator:(value){
-              return passwordCheck(value!);
-              },
-                    ),
-
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              AuthRoundedButton(
-                  color: purpleButton,
-                  title: 'Sign In',
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        showSpinner = true;
-                      });
-
-                      try {
-                        var userId = await signIn(email, password);
-                        debugPrint('\n ********userid $userId');
-                        if (userId != null) {
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          //setting shared pref. variable value
-                          prefs.setBool("isLoggedIn", true);
-                          prefs.setString('loggedInUserId', userId);
-
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, HomeScreen.id, (route) => false);
-                        } else {
-                          //to clear the text form fields
-                          formTextController1.clear();
-                          formTextController2.clear();
-
-                          //toast message
-                          Fluttertoast.showToast(
-                            msg: "Invalid email or password !",
-                            backgroundColor: Colors.black87,
-                            textColor: Colors.white,
-                            gravity: ToastGravity.BOTTOM,
-                            toastLength: Toast.LENGTH_LONG,
-                          );
+                        decoration:
+                        kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
+                        validator: (value) {
+                          return emailCheck(value!);
                         }
-                        email = "";
-                        password = "";
+                      ),
+                      const SizedBox(
+                        height: 8.0,
+                      ),
+                      TextFormField(
+                        controller: formTextController2,
+                          obscureText: true,
+                          style: const TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                          onChanged: (value) {
+                            //Do something with the user input.
+                            setState(() {
+                              password = value;
+                            });
+                          },
+                          decoration: kTextFieldDecoration.copyWith(
+                              hintText: 'Enter your password'),
+                        validator:(value){
+                return passwordCheck(value!);
+                },
+                      ),
+
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                AuthRoundedButton(
+                    color: purpleButton,
+                    title: 'Sign In',
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
                         setState(() {
-                          showSpinner = false;
+                          showSpinner = true;
                         });
-                      } catch (e) {
-                        debugPrint(e.toString());
+
+                        try {
+                          var userId = await signIn(email, password);
+                          debugPrint('\n ********userid $userId');
+                          if (userId != null) {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            //setting shared pref. variable value
+                            prefs.setBool("isLoggedIn", true);
+                            prefs.setString('loggedInUserId', userId);
+
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, HomeScreen.id, (route) => false);
+                          } else {
+                            //to clear the text form fields
+                            formTextController1.clear();
+                            formTextController2.clear();
+
+                            //toast message
+                            Fluttertoast.showToast(
+                              msg: "Invalid email or password !",
+                              backgroundColor: Colors.black87,
+                              textColor: Colors.white,
+                              gravity: ToastGravity.BOTTOM,
+                              toastLength: Toast.LENGTH_LONG,
+                            );
+                          }
+                          email = "";
+                          password = "";
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        } catch (e) {
+                          debugPrint(e.toString());
+                        }
                       }
-                    }
-                  },),
-            ],
+                    },),
+              ],
+            ),
           ),
         ),
       ),

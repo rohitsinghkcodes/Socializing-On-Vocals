@@ -251,6 +251,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     onRefresh: fetchPlaylist,
                     triggerMode: RefreshIndicatorTriggerMode.onEdge,
                     strokeWidth: 3.5,
+
+                    backgroundColor: Colors.transparent,
                     color: mainPurpleTheme,
                     child: PageView.builder(
                       controller: pageController,
