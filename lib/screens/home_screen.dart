@@ -6,9 +6,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:multiavatar/multiavatar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socializing_on_vocals/helper/backpress_check.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/helper/home_screen_helper/initializations.dart';
+import 'package:socializing_on_vocals/helper/home_screen_helper/likes_helper/like_checker.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/settings_screen.dart';
 import 'package:socializing_on_vocals/screens/upload_screen.dart';
@@ -25,21 +27,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-
   final String baseUrl = "https://v2sov.herokuapp.com/audio/";
 
+  void initPlayer() {
+    audioPlayer.onDurationChanged.listen(
+      (Duration d) {
+        setState(() => duration = d);
+      },
+    );
 
-  void initPlayer(){
-    audioPlayer.onDurationChanged.listen((Duration d) {
-      setState(() => duration = d);
-    },);
-
-    audioPlayer.onAudioPositionChanged.listen((Duration  p){
-    setState(() => position = p);
-  });
+    audioPlayer.onAudioPositionChanged.listen((Duration p) {
+      setState(() => position = p);
+    });
   }
 
-  void seekToSecond(int second){
+  void seekToSecond(int second) {
     Duration newDuration = Duration(seconds: second);
     audioPlayer.seek(newDuration);
   }
@@ -48,11 +50,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
         trackHeight: 2,
-        thumbShape: SliderComponentShape.noOverlay,   //removing thumb shape
+        thumbShape: SliderComponentShape.noOverlay, //removing thumb shape
       ),
       child: Slider(
-        activeColor: const Color(0xFF573192),
-          inactiveColor: Colors.black45  ,
+          activeColor: const Color(0xFF573192),
+          inactiveColor: Colors.black45,
           value: position.inSeconds.toDouble(),
           min: 0.0,
           max: duration.inSeconds.toDouble(),
@@ -60,10 +62,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             setState(() {
               seekToSecond(value.toInt());
               value = value;
-            });}),
+            });
+          }),
     );
   }
-
 
   //For profile_helper SVG
   late String svgCode;
@@ -89,7 +91,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           icon = const Icon(Icons.mic_rounded);
           audioTitle = songList[currentAudioNo]['name'];
           svgCode = multiavatar(songList[currentAudioNo]['userid']['_id']);
+
+          //updating list for like 1st time
           likesList = songList[currentAudioNo]['likes'];
+          //setting likes count
+          audioLikesCount = likesList.length;
         });
 
         //Playing 1st audio in the starting
@@ -129,7 +135,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       showSpinner = true;
     });
     position = const Duration(seconds: 0);
+    isLikeSet();
     initPlayer();
+
   }
 
   @override
@@ -170,18 +178,27 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
+
+  //setting like icon liked or not
+  void isLikeSet() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+        isLiked = likeChecker(prefs.getString('loggedInUserId'),likesList);
+    });
+  }
+
   void moreOptClickListener(String value) {
     switch (value) {
       case '👤   Profile':
         setState(() {
-        audioPlayer.pause();
+          audioPlayer.pause();
           icon = const Icon(Icons.play_arrow);
         });
         Navigator.pushNamed(context, ProfileScreen.id);
         break;
       case '🎙   Upload':
         setState(() {
-        audioPlayer.pause();
+          audioPlayer.pause();
           icon = const Icon(Icons.play_arrow);
         });
         Navigator.pushNamed(context, UploadFile.id);
@@ -189,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
       case '⚙️   Settings':
         setState(() {
-        audioPlayer.pause();
+          audioPlayer.pause();
           icon = const Icon(Icons.play_arrow);
         });
         Navigator.pushNamed(context, Settings.id);
@@ -253,7 +270,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     onRefresh: fetchPlaylist,
                     triggerMode: RefreshIndicatorTriggerMode.onEdge,
                     strokeWidth: 3.5,
-
                     backgroundColor: Colors.transparent,
                     color: mainPurpleTheme,
                     child: PageView.builder(
@@ -265,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         audioPlayer.stop();
                         //Resetting the pause/play option
                         isPlaying = true;
-                        setState(() {
+                        setState(() async{
                           position = const Duration(seconds: 0);
                           icon = const Icon(Icons.mic_rounded);
 
@@ -274,15 +290,23 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
                           //updating the list of liked on page changed
                           likesList = songList[currentAudioNo]['likes'];
+                          //updating likes count
+                          audioLikesCount = likesList.length;
+
+                          //setting like button
+                          isLikeSet();
 
                           //setting avatar for the new audio
                           svgCode = multiavatar(
                               songList[currentAudioNo]['userid']['_id']);
                         });
 
+                        print('0000000000000llllllli0000000000');
+                        print(isLiked);
+
                         //song specific url
-                        String playUrl = baseUrl +
-                            songList[audioNumber]['songid'];
+                        String playUrl =
+                            baseUrl + songList[audioNumber]['songid'];
 
                         //for playing song/audio
                         audioPlayer.play(playUrl);
@@ -295,21 +319,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                   Text('12',style: TextStyle(color:  const Color(0xffff4c92)),),
+                                  Text(
+                                    audioLikesCount.toString(),
+                                    style: const TextStyle(
+                                        color: Color(0xffff4c92),
+                                    ),
+                                  ),
                                   GestureDetector(
                                     onTap: () {
                                       toggleIsLiked();
-                                      Fluttertoast.showToast(
-                                          msg: "Just pressed like button",
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black45,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0);
                                     },
                                     child: AnimateIcons(
-                                      startIcon: Icons.favorite_border_rounded,
-                                      endIcon: Icons.favorite_rounded,
+                                      startIcon: isLiked ? Icons.favorite_rounded: Icons.favorite_border_rounded,
+                                      endIcon: isLiked? Icons.favorite_border_rounded: Icons.favorite_rounded,
                                       controller: controllerIcon,
                                       size: 30.0,
                                       onStartIconPress: () {
@@ -322,9 +344,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       },
                                       duration:
                                           const Duration(milliseconds: 500),
-                                      startIconColor: const Color(0xffff4c92),
-                                      endIconColor: const Color(0xffea095f),
-                                      clockwise: false,
+                                      startIconColor: isLiked? const Color(0xffea095f) : const Color(0xffff4c92),
+                                      endIconColor: isLiked? const Color(0xffff4c92) : const Color(0xffea095f),
+                                      clockwise: isLiked? true : false,
                                     ),
                                   ),
                                   const SizedBox(
@@ -431,9 +453,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                               ),
                                       ),
                                     ),
-
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 35),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 35),
                                       child: slider(),
                                     ),
                                     const SizedBox(

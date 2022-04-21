@@ -3,13 +3,17 @@ import 'package:animate_icons/animate_icons.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:socializing_on_vocals/helper/home_screen_helper/likes_helper/like_checker.dart';
 
 AudioPlayer audioPlayer = AudioPlayer();
 PageController pageController = PageController(initialPage: 0);
+
 bool isPlaying = true;
 bool isLiked = false;
 bool showSpinner = false;
 List<dynamic> songList = [];
+List<dynamic> likesList = [];
+int audioLikesCount = 0;
 int currentAudioNo = 0;
 late String audioTitle = "hello";
 int playlistSize = 0;
