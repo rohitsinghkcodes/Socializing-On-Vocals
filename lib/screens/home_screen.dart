@@ -25,11 +25,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  final String baseUrl = "https://socializingonvocls.herokuapp.com/audio/";
+
+  final String baseUrl = "https://v2sov.herokuapp.com/audio/";
 
 
   void initPlayer(){
-
     audioPlayer.onDurationChanged.listen((Duration d) {
       setState(() => duration = d);
     },);
@@ -77,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         String data = response.body;
 
         List<dynamic> list = await jsonDecode(data);
+        print('####printing list\n${list}');
 
         //Setting playlist size i.e. no of songs available currently in db
         //Updating List of Songs
@@ -88,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           icon = const Icon(Icons.mic_rounded);
           audioTitle = songList[currentAudioNo]['name'];
           svgCode = multiavatar(songList[currentAudioNo]['userid']['_id']);
+          likesList = songList[currentAudioNo]['likes'];
         });
 
         //Playing 1st audio in the starting
@@ -266,13 +268,24 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         setState(() {
                           position = const Duration(seconds: 0);
                           icon = const Icon(Icons.mic_rounded);
+
+                          //updating the current audio number
                           currentAudioNo = audioNumber;
+
+                          //updating the list of liked on page changed
+                          likesList = songList[currentAudioNo]['likes'];
+
+                          //setting avatar for the new audio
                           svgCode = multiavatar(
                               songList[currentAudioNo]['userid']['_id']);
                         });
+
+                        //song specific url
                         String playUrl = baseUrl +
-                            songList[audioNumber]['songid']; //song specific url
-                        audioPlayer.play(playUrl); //for playing song/audio
+                            songList[audioNumber]['songid'];
+
+                        //for playing song/audio
+                        audioPlayer.play(playUrl);
                       },
                       itemBuilder: (context, position) {
                         return Column(
@@ -282,6 +295,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                   Text('12',style: TextStyle(color:  const Color(0xffff4c92)),),
                                   GestureDetector(
                                     onTap: () {
                                       toggleIsLiked();

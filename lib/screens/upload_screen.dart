@@ -30,9 +30,9 @@ class _UploadFileState extends State<UploadFile> {
   final _controllerTEC = TextEditingController();
   //form Key
   final _formKey = GlobalKey<FormState>();
-  //color
+
   //Post request url
-  String postUrl = "https://socializingonvocls.herokuapp.com/submit";
+  String postUrl = "https://v2sov.herokuapp.com/submit";
 
   //explorer pick or audio file selection
   void _openFileExplorer() async {

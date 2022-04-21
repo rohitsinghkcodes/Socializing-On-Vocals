@@ -24,6 +24,8 @@ class _SignInState extends State<SignIn> {
   late String email ;
   late String password ;
 
+  String singInBaseUrl ='https://v2sov.herokuapp.com/api/signin';
+
   //text editing controller
   final formTextController1 = TextEditingController();
   final formTextController2 = TextEditingController();
@@ -38,7 +40,7 @@ class _SignInState extends State<SignIn> {
       'Content-Type': 'application/json',
       };
     var request = http.Request(
-        'POST', Uri.parse('https://socializingonvocls.herokuapp.com/api/signin'));
+        'POST', Uri.parse(singInBaseUrl));
     request.body = json.encode({
       "email": email.toString(),
       "password": password.toString(),

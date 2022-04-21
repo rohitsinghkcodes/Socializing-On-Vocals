@@ -27,6 +27,8 @@ class _SignUpState extends State<SignUp> {
   String name = "";
   String phone = "";
 
+  String singUpBaseUrl = 'https://v2sov.herokuapp.com/api/signup';
+
 
   //form Key
   final _formKey = GlobalKey<FormState>();
@@ -45,7 +47,7 @@ class _SignUpState extends State<SignUp> {
   Future<bool> signUp(String email, String password) async {
     var headers = {'Content-Type': 'application/json'};
     var request = http.Request(
-        'POST', Uri.parse('https://socializingonvocls.herokuapp.com/api/signup'));
+        'POST', Uri.parse(singUpBaseUrl));
 
     request.body = json.encode(
         {"name": name, "email": email, "password": password, "phone": phone});
