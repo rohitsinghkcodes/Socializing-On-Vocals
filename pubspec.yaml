@@ -30,6 +30,7 @@ dependencies:
   multiavatar: ^0.1.5
   flutter_svg: ^1.0.3
   animate_icons: ^2.0.0
+  swipe_deck: ^1.1.0
 
 dev_dependencies:
   flutter_test:

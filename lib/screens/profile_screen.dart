@@ -8,6 +8,8 @@ import 'package:socializing_on_vocals/helper/profile_bg_color_random.dart';
 import 'package:socializing_on_vocals/screens/profile_helper/profile_details_handler.dart';
 import 'package:socializing_on_vocals/screens/profile_helper/user_profile_audio_player.dart';
 
+import 'home_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   static const id = "profile_screen";
 

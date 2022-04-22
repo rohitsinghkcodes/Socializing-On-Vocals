@@ -11,11 +11,14 @@ import 'package:socializing_on_vocals/helper/backpress_check.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/helper/home_screen_helper/initializations.dart';
 import 'package:socializing_on_vocals/helper/home_screen_helper/likes_helper/like_checker.dart';
+import 'package:socializing_on_vocals/helper/home_screen_helper/likes_helper/liking_post.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/settings_screen.dart';
 import 'package:socializing_on_vocals/screens/upload_screen.dart';
-
 import 'Home Audio Artist/home_audio_artist_profile.dart';
+
+
+//TODO: like icon not showing liked even if it is already liked in the 1st post: fix needed
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -79,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         String data = response.body;
 
         List<dynamic> list = await jsonDecode(data);
-        print('####printing list\n${list}');
+        debugPrint('####printing list\n$list');
 
         //Setting playlist size i.e. no of songs available currently in db
         //Updating List of Songs
@@ -92,10 +95,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           audioTitle = songList[currentAudioNo]['name'];
           svgCode = multiavatar(songList[currentAudioNo]['userid']['_id']);
 
+
+          //setting liked icon or disliked icon
+          likingPost(songId);
+
           //updating list for like 1st time
           likesList = songList[currentAudioNo]['likes'];
           //setting likes count
           audioLikesCount = likesList.length;
+
+          //setting song id
+          songId = songList[0]['songid'].toString();
         });
 
         //Playing 1st audio in the starting
@@ -135,7 +145,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       showSpinner = true;
     });
     position = const Duration(seconds: 0);
-    isLikeSet();
     initPlayer();
 
   }
@@ -154,9 +163,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (state == AppLifecycleState.inactive) {
       audioPlayer.pause();
       debugPrint('Paused');
-    } else if (state == AppLifecycleState.resumed) {
-      audioPlayer.resume();
-      debugPrint('Resumed');
     }
 
     if (state == AppLifecycleState.paused) {
@@ -170,10 +176,33 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-  void toggleIsLiked() {
+  void toggleIsLiked(String songId) {
+
+    likingPost(songId);
+
+
+    // inc dec like counter acc to liking and disliking
+    // setState(() {
+    //   isLiked? audioLikesCount-=1 : audioLikesCount+=1;
+    // });
+
+    // if(isLiked)
+    //   {
+    //     setState(() {
+    //       isLiked = false;
+    //     });
+    //   }
+    // else{
+    //   setState(() {
+    //     isLiked = true;
+    //   });
+    // }
+    // print(isLiked);
+
     if (controllerIcon.isStart()) {
       controllerIcon.animateToEnd();
-    } else if (controllerIcon.isEnd()) {
+    }
+    else if (controllerIcon.isEnd()) {
       controllerIcon.animateToStart();
     }
   }
@@ -184,6 +213,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
         isLiked = likeChecker(prefs.getString('loggedInUserId'),likesList);
+
     });
   }
 
@@ -192,6 +222,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       case '👤   Profile':
         setState(() {
           audioPlayer.pause();
+          isPlaying = false;
           icon = const Icon(Icons.play_arrow);
         });
         Navigator.pushNamed(context, ProfileScreen.id);
@@ -199,6 +230,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       case '🎙   Upload':
         setState(() {
           audioPlayer.pause();
+          isPlaying = false;
           icon = const Icon(Icons.play_arrow);
         });
         Navigator.pushNamed(context, UploadFile.id);
@@ -207,6 +239,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       case '⚙️   Settings':
         setState(() {
           audioPlayer.pause();
+          isPlaying = false;
           icon = const Icon(Icons.play_arrow);
         });
         Navigator.pushNamed(context, Settings.id);
@@ -264,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 )
               : GestureDetector(
                   onDoubleTap: () {
-                    toggleIsLiked();
+                    toggleIsLiked(songId);
                   },
                   child: RefreshIndicator(
                     onRefresh: fetchPlaylist,
@@ -281,7 +314,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         audioPlayer.stop();
                         //Resetting the pause/play option
                         isPlaying = true;
-                        setState(() async{
+
+                        setState(() {
                           position = const Duration(seconds: 0);
                           icon = const Icon(Icons.mic_rounded);
 
@@ -299,14 +333,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           //setting avatar for the new audio
                           svgCode = multiavatar(
                               songList[currentAudioNo]['userid']['_id']);
+
+
+                          //updating song id
+                          songId = songList[currentAudioNo]['songid'].toString();
+
                         });
 
-                        print('0000000000000llllllli0000000000');
-                        print(isLiked);
+                        print('**************** $songId\n');
 
                         //song specific url
                         String playUrl =
                             baseUrl + songList[audioNumber]['songid'];
+
 
                         //for playing song/audio
                         audioPlayer.play(playUrl);
@@ -325,30 +364,28 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         color: Color(0xffff4c92),
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      toggleIsLiked();
+                                  AnimateIcons(
+                                    startIcon: isLiked ? Icons.favorite_rounded: Icons.favorite_border_rounded,
+                                    endIcon: isLiked? Icons.favorite_border_rounded: Icons.favorite_rounded,
+                                    controller: controllerIcon,
+                                    size: 30.0,
+                                    onStartIconPress: () {
+                                      // Clicked on Add Icon
+                                      likingPost(songId);
+                                      return true;
                                     },
-                                    child: AnimateIcons(
-                                      startIcon: isLiked ? Icons.favorite_rounded: Icons.favorite_border_rounded,
-                                      endIcon: isLiked? Icons.favorite_border_rounded: Icons.favorite_rounded,
-                                      controller: controllerIcon,
-                                      size: 30.0,
-                                      onStartIconPress: () {
-                                        // Clicked on Add Icon
-                                        return true;
-                                      },
-                                      onEndIconPress: () {
-                                        // Clicked on Close Icon
-                                        return true;
-                                      },
-                                      duration:
-                                          const Duration(milliseconds: 500),
-                                      startIconColor: isLiked? const Color(0xffea095f) : const Color(0xffff4c92),
-                                      endIconColor: isLiked? const Color(0xffff4c92) : const Color(0xffea095f),
-                                      clockwise: isLiked? true : false,
-                                    ),
+                                    onEndIconPress: () {
+                                      // Clicked on Close Icon
+                                      likingPost(songId);
+                                      return true;
+                                    },
+                                    duration:
+                                        const Duration(milliseconds: 500),
+                                    startIconColor: isLiked? const Color(0xffea095f) : const Color(0xffff4c92),
+                                    endIconColor: isLiked? const Color(0xffff4c92) : const Color(0xffea095f),
+                                    clockwise: isLiked? true : false,
                                   ),
+
                                   const SizedBox(
                                     width: 10,
                                   ),
@@ -420,7 +457,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                             BorderRadius.circular(30.0),
                                         child: isPlaying
                                             ? Image.network(
-                                                'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
+                                          songList[currentAudioNo]['art'],
                                                 height: 300.0,
                                                 width: 300.0,
                                               )
@@ -434,8 +471,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                                     0.25),
                                                             BlendMode.dstATop),
                                                     child: Image.network(
-                                                      'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/70098/optimized_large_thumb_stage.jpg',
-                                                      height: 300.0,
+                                                      songList[currentAudioNo]['art'],
+                                                    height: 300.0,
                                                       width: 300.0,
                                                     ),
                                                   ),

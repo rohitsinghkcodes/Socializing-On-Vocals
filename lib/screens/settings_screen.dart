@@ -9,6 +9,7 @@ import 'package:socializing_on_vocals/screens/welcome_screen.dart';
 import 'app_details_section/about_us_screen.dart';
 import 'app_details_section/privacy_policy.dart';
 import 'app_details_section/terms_and_conditions.dart';
+import 'home_screen.dart';
 
 class Settings extends StatefulWidget {
   static const id = "settings_screen";
@@ -90,6 +91,7 @@ class _SettingsState extends State<Settings> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: const Color(0xFF000000),
+
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [

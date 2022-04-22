@@ -26,7 +26,7 @@ const kTextFieldDecoration = InputDecoration(
 //Field for upload description
 
 const kUploadFieldDecoration = InputDecoration(
-  hintText: 'Add Some Description',
+  hintText: 'Add a title',
   hintStyle: TextStyle(color: Colors.grey,),
 
   // hintStyle: TextStyle(color: Colors.grey),
@@ -52,5 +52,14 @@ const kUploadFieldDecoration = InputDecoration(
 TextStyle headingStyle = const TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 TextStyle content = const TextStyle(fontSize: 14,color: Colors.white70);
 
-
+//audio art links
+const audioArtLinks = [
+  'https://i1.sndcdn.com/artworks-000665106439-po9nf2-t500x500.jpg',
+  'https://login.lyricallemonade.com/wp-content/uploads/1558328126_9e41973b2ca0da242afc25d97863dda5-620x620.jpg',
+  'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/69928/optimized_large_thumb_stage.jpg',
+  'https://dw0i2gv3d32l1.cloudfront.net/uploads/stage/stage_image/69927/optimized_large_thumb_stage.jpg',
+  'https://dw0i2gv3d32l1.cloudfront.net/uploads/stage/stage_image/67507/optimized_large_thumb_stage.jpg',
+  'https://media.istockphoto.com/vectors/young-man-listen-to-music-on-headphones-music-therapy-guy-profile-vector-id1205771672?k=20&m=1205771672&s=170667a&w=0&h=KeWTIsFjySzIFbuQ8y4TcYIUp8Ft2Fpqb0Yy6QxJl2I=',
+  'https://d1wnwqwep8qkqc.cloudfront.net/uploads/stage/stage_image/71294/optimized_large_thumb_stage.jpg',
+];
 
