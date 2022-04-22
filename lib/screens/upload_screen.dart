@@ -7,9 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socializing_on_vocals/components/rounded_button.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/helper/constants.dart';
-import 'package:socializing_on_vocals/helper/home_screen_helper/initializations.dart';
 import 'package:socializing_on_vocals/helper/input_field_conditions.dart';
-import 'package:socializing_on_vocals/screens/home_screen.dart';
 import 'package:swipe_deck/swipe_deck.dart';
 
 class UploadFile extends StatefulWidget {

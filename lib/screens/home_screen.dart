@@ -17,9 +17,6 @@ import 'package:socializing_on_vocals/screens/settings_screen.dart';
 import 'package:socializing_on_vocals/screens/upload_screen.dart';
 import 'Home Audio Artist/home_audio_artist_profile.dart';
 
-
-//TODO: like icon not showing liked even if it is already liked in the 1st post: fix needed
-
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
 
@@ -32,7 +29,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final String baseUrl = "https://v2sov.herokuapp.com/audio/";
 
+
+  String? userId;
+
+  void setUserId() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('loggedInUserId');
+    });
+
+  }
+
   void initPlayer() {
+
     audioPlayer.onDurationChanged.listen(
       (Duration d) {
         setState(() => duration = d);
@@ -96,17 +105,23 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           svgCode = multiavatar(songList[currentAudioNo]['userid']['_id']);
 
 
-          //setting liked icon or disliked icon
-          likingPost(songId);
+
 
           //updating list for like 1st time
           likesList = songList[currentAudioNo]['likes'];
           //setting likes count
           audioLikesCount = likesList.length;
 
+          //setting liked icon or disliked icon
+          // likingPost(songId);
+
+
           //setting song id
           songId = songList[0]['songid'].toString();
         });
+
+       //setting initial like
+        isLikeSet();
 
         //Playing 1st audio in the starting
         String playUrl = baseUrl + songList[0]["songid"];
@@ -146,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     });
     position = const Duration(seconds: 0);
     initPlayer();
+    setUserId();
 
   }
 
@@ -180,25 +196,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
     likingPost(songId);
 
-
-    // inc dec like counter acc to liking and disliking
-    // setState(() {
-    //   isLiked? audioLikesCount-=1 : audioLikesCount+=1;
-    // });
-
-    // if(isLiked)
-    //   {
-    //     setState(() {
-    //       isLiked = false;
-    //     });
-    //   }
-    // else{
-    //   setState(() {
-    //     isLiked = true;
-    //   });
-    // }
-    // print(isLiked);
-
     if (controllerIcon.isStart()) {
       controllerIcon.animateToEnd();
     }
@@ -213,6 +210,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
         isLiked = likeChecker(prefs.getString('loggedInUserId'),likesList);
+        likeSwitch = isLiked;
 
     });
   }
@@ -297,7 +295,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 )
               : GestureDetector(
                   onDoubleTap: () {
+
+                    //adds and removes user id in local like list
+                    likeSwitch? songList[currentAudioNo]['likes'].remove(userId): songList[currentAudioNo]['likes'].add(userId);
+
+                    //inc-dec like counter in local state
+
+                    setState(() {
+                      likeSwitch? audioLikesCount-=1 : audioLikesCount+=1;
+                    likeSwitch = likeSwitch?false:true;
+
+                    });
                     toggleIsLiked(songId);
+
                   },
                   child: RefreshIndicator(
                     onRefresh: fetchPlaylist,
@@ -340,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
                         });
 
-                        print('**************** $songId\n');
+                        debugPrint('**************** $songId\n');
 
                         //song specific url
                         String playUrl =
@@ -370,13 +380,34 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     controller: controllerIcon,
                                     size: 30.0,
                                     onStartIconPress: () {
-                                      // Clicked on Add Icon
-                                      likingPost(songId);
+
+                                      //adds and removes user id in local like list
+                                      likeSwitch? songList[currentAudioNo]['likes'].remove(userId): songList[currentAudioNo]['likes'].add(userId);
+
+
+                                      //inc-dec like counter in local state
+
+                                      setState(() {
+                                        likeSwitch? audioLikesCount-=1 : audioLikesCount+=1;
+                                        likeSwitch = likeSwitch?false:true;
+
+                                      });
+                                      toggleIsLiked(songId);
+
                                       return true;
                                     },
                                     onEndIconPress: () {
                                       // Clicked on Close Icon
-                                      likingPost(songId);
+                                      likeSwitch? songList[currentAudioNo]['likes'].remove(userId): songList[currentAudioNo]['likes'].add(userId);
+
+                                      //inc-dec like counter in local state
+
+                                      setState(() {
+                                        likeSwitch? audioLikesCount-=1 : audioLikesCount+=1;
+                                        likeSwitch = likeSwitch?false:true;
+
+                                      });
+                                      toggleIsLiked(songId);
                                       return true;
                                     },
                                     duration:

@@ -9,6 +9,7 @@ PageController pageController = PageController(initialPage: 0);
 
 bool isPlaying = true;
 bool isLiked = false;
+bool likeSwitch = false;
 bool showSpinner = false;
 List<dynamic> songList = [];
 List<dynamic> likesList = [];
