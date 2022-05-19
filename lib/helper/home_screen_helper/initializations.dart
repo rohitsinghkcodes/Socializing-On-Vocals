@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 AudioPlayer audioPlayer = AudioPlayer();
 PageController pageController = PageController(initialPage: 0);
 
+String loggedInUserid = "";
 bool isPlaying = true;
 bool isLiked = false;
 bool likeSwitch = false;
@@ -20,7 +21,11 @@ int playlistSize = 0;
 bool idDetailsLoaded = false;
 late String songId = "";
 Icon icon = const Icon(Icons.mic_rounded);
-late String artLink ;
+//for comment section
+List commentList = [];
+bool loadingComment = false;
+final formKey = GlobalKey<FormState>();
+final TextEditingController commentController = TextEditingController();
 
 AnimateIconController controllerIcon = AnimateIconController();
 

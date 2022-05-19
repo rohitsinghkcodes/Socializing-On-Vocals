@@ -57,9 +57,11 @@ class _SignInState extends State<SignIn> {
       //user id and user token
       var userId = result["user"]["_id"];
       var userToken = result["token"];
+      var userName = result["user"]["name"];
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('loggedInUserToken', userToken);
+      prefs.setString('loggedInUserName', userName);
 
       return userId;
     } else {

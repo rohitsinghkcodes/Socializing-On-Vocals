@@ -8,8 +8,6 @@ import 'package:socializing_on_vocals/helper/profile_bg_color_random.dart';
 import 'package:socializing_on_vocals/screens/profile_helper/profile_details_handler.dart';
 import 'package:socializing_on_vocals/screens/profile_helper/user_profile_audio_player.dart';
 
-import 'home_screen.dart';
-
 class ProfileScreen extends StatefulWidget {
   static const id = "profile_screen";
 
@@ -220,7 +218,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               barrierDismissible: false,
                                               context: context,
                                               builder: (context) => AlertDialog(
-                                                title: const Text("Edit"),
+                                                backgroundColor: Colors.black87,
+                                                title: const Text("Edit title"),
                                                 content: TextField(
                                                   controller: _controller,
                                                   autofocus: true,
@@ -229,7 +228,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   maxLength: 30,
                                                 ),
                                                 actions: [
-                                                  OutlinedButton(
+                                                  ElevatedButton(
+                                                    style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => mainPurpleTheme)),
                                                     child: const Text("Cancel"),
                                                     onPressed: () {
                                                       _controller.clear();   //clearing the text field when not pressed submit button to make the field empty for next use
@@ -237,6 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     },
                                                   ),
                                                   ElevatedButton(
+                                                    style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => mainPurpleTheme)),
                                                     child: const Text("Submit"),
                                                     onPressed: () async {
                                                       Navigator.pop(context);
@@ -296,11 +297,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             showDialog(
                                               context: context,
                                               builder: (context) => AlertDialog(
-                                                title: const Text("Delete"),
+                                                backgroundColor: Colors.black87,
                                                 content: Text(
-                                                    "Do you want to delete ${audioListPerUser[index]['filename']} permanently ?"),
+                                                    "Do you want to delete '${audioListPerUser[index]['filename']}' permanently ?"),
                                                 actions: <Widget>[
-                                                  OutlinedButton(
+                                                  ElevatedButton(
+                                                    style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => mainPurpleTheme)),
                                                     child: const Text(
                                                       "No",
                                                     ),
@@ -310,7 +312,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   ),
                                                   ElevatedButton(
                                                     child: const Text("Yes"),
-
+                                                    style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => Colors.redAccent)),
                                                     onPressed: () async {
                                                       Navigator.pop(context);
                                                       setState(() {

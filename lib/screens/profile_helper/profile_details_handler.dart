@@ -21,6 +21,7 @@ Future getUserById(String id) async {
     email = data['email'];
     phone = data['phone'];
     audioListPerUser = data['SongList'];
+    print(data);
   } else {
     print(response.reasonPhrase);
   }
