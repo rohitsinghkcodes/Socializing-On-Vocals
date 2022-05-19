@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:multiavatar/multiavatar.dart';
-
-import '../../colors.dart';
-import '../../profile_bg_color_random.dart';
+import 'package:socializing_on_vocals/screens/Home%20Audio%20Artist/home_audio_artist_profile.dart';
 
 Widget commentSheet(dynamic data, BuildContext context, String userId ) {
 
@@ -35,7 +33,17 @@ Widget commentSheet(dynamic data, BuildContext context, String userId ) {
                     leading: GestureDetector(
                       onTap: () async {
                         // Display the image in large form.
-                        //TODO: add navigation to user profile page
+                        // add navigation to user profile page
+
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                HomeAudioArtistProfile(
+                                    userId: data[i]['userId']
+                                        .toString()),
+                          ),
+                        );
+
                         debugPrint("Comment Clicked");
                       },
                       child: Container(
@@ -83,58 +91,5 @@ Widget commentSheet(dynamic data, BuildContext context, String userId ) {
         ),
       ),
     ),
-  );
-}
-
-Widget commentChild(data) {
-  return ListView(
-    children: [
-      for (var i = 0; i < data.length; i++)
-        ListTile(
-          leading: GestureDetector(
-            onTap: () async {
-              // Display the image in large form.
-              //TODO: add navigation to user profile page
-              debugPrint("Comment Clicked");
-            },
-            child: Container(
-              height: 50.0,
-              width: 50.0,
-              decoration: const BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.all(Radius.circular(50))),
-              child:
-              // CircleAvatar(
-              //   backgroundColor: Colors.black26,
-              //   radius: 28,
-              //   child: SvgPicture.string(
-              //       multiavatar(data[i]['userId'], trBackground: true)),
-              // ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(30.0),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    // color: returnBgProfile(userId),
-                    color: Colors.amber,
-                  ),
-                  child:
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-                    child: SvgPicture.string(multiavatar(data[i]['userId'], trBackground: true)),
-                  ),
-                  height: 90,
-                  width: 90,
-
-                ),
-              ),
-            ),
-          ),
-          title: Text(
-            data[i]['username'],
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Text(data[i]['msg']),
-        )
-    ],
   );
 }

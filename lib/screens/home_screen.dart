@@ -304,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       commentController.text
                     };
 
-                    //TODO: Add post comment here
+                    // POST method called for posting comment
                     postComment(
                         songList[currentAudioNo]['songid']
                             .toString(), value['userId'], value['msg'], value['username']);
@@ -584,17 +584,21 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     ),
                                     GestureDetector(
                                       onTap: () async {
-                                        //
+
+                                        //audio paused on pressing comment icon
+                                        audioPlayer.pause();
+
                                         setState(() {
+                                          //starting loading indicator
                                           loadingComment = true;
+                                          //setting audio visual status to paused
+                                          icon = const Icon(Icons.play_arrow);
                                         });
+
+                                        //fetching the list of comments for the particular audio
                                         await fetchComments(
                                             songList[currentAudioNo]['songid']
                                                 .toString());
-                                        // loadingComment
-                                        //     ? Container()
-                                        //     :
-
 
                                       },
                                       child: const Icon(
