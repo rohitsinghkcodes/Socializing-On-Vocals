@@ -258,6 +258,85 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           loadingComment = false;
         });
 
+        showModalBottomSheet(
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          context: context,
+          builder: (context) => AnimatedPadding(
+            padding: MediaQuery.of(context)
+                .viewInsets,
+            duration: const Duration(
+                milliseconds: 100),
+            child:
+            //Bottom Comment Box
+            CommentBox(
+              img:
+              userId, //bottom comment box initial image,
+              child: commentSheet(
+                  commentList, context, userId),
+              labelText: 'Write a comment...',
+              withBorder: false,
+              errorText:
+              'Comment cannot be blank',
+              sendButtonMethod: () async {
+                if (formKey.currentState!
+                    .validate()) {
+                  //printing the comment written
+                  debugPrint(
+                      commentController.text);
+
+                  SharedPreferences prefs =
+                  await SharedPreferences
+                      .getInstance();
+
+                  setState(() {
+                    var value = {
+                      //send name with comment
+                      'username': prefs.getString(
+                          'loggedInUserName'), //change user name acc to api
+
+                      //send image with comment
+                      'userId': prefs.getString(
+                          'loggedInUserId'),
+
+                      //send message with comment
+                      'msg':
+                      commentController.text
+                    };
+
+                    //TODO: Add post comment here
+                    postComment(
+                        songList[currentAudioNo]['songid']
+                            .toString(), value['userId'], value['msg'], value['username']);
+                    //adding comment at the end
+                    commentList.insert(
+                        commentList.length,
+                        value);
+                  });
+                  commentController.clear();
+                  FocusScope.of(context)
+                      .unfocus();
+                } else {
+                  debugPrint("Not validated");
+                }
+              },
+              formKey: formKey,
+              commentController:
+              commentController,
+              //comment input box color
+              backgroundColor:
+              const Color(0xFF27123F),
+              //comment text color
+              textColor: Colors.white70,
+              //send icon for commenting
+              sendWidget: const Icon(
+                  Icons.send_sharp,
+                  size: 25,
+                  color: Colors.white),
+            ),
+          ),
+        );
+
         debugPrint('Comment Section');
         debugPrint(commentList.length.toString());
         debugPrint(commentList.toString());
@@ -506,9 +585,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     GestureDetector(
                                       onTap: () async {
                                         //
-                                        // setState(() {
-                                        //   loadingComment = true;
-                                        // });
+                                        setState(() {
+                                          loadingComment = true;
+                                        });
                                         await fetchComments(
                                             songList[currentAudioNo]['songid']
                                                 .toString());
@@ -516,84 +595,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         //     ? Container()
                                         //     :
 
-                                        showModalBottomSheet(
-                                          backgroundColor: Colors.transparent,
-                                          isScrollControlled: true,
-                                          context: context,
-                                          builder: (context) => AnimatedPadding(
-                                            padding: MediaQuery.of(context)
-                                                .viewInsets,
-                                            duration: const Duration(
-                                                milliseconds: 100),
-                                            child:
-                                                //Bottom Comment Box
-                                                CommentBox(
-                                              img:
-                                                  userId, //bottom comment box initial image,
-                                              child: commentSheet(
-                                                  commentList, context, userId),
-                                              labelText: 'Write a comment...',
-                                              withBorder: false,
-                                              errorText:
-                                                  'Comment cannot be blank',
-                                              sendButtonMethod: () async {
-                                                if (formKey.currentState!
-                                                    .validate()) {
-                                                  //printing the comment written
-                                                  debugPrint(
-                                                      commentController.text);
 
-                                                  SharedPreferences prefs =
-                                                      await SharedPreferences
-                                                          .getInstance();
-
-                                                  setState(() {
-                                                    var value = {
-                                                      //send name with comment
-                                                      'username': prefs.getString(
-                                                          'loggedInUserName'), //change user name acc to api
-
-                                                      //send image with comment
-                                                      'userId': prefs.getString(
-                                                          'loggedInUserId'),
-
-                                                      //send message with comment
-                                                      'msg':
-                                                          commentController.text
-                                                    };
-
-                                                      //TODO: Add post comment here
-                                                    postComment(
-                                                        songList[currentAudioNo]['songid']
-                                                            .toString(), value['userId'], value['msg'], value['username']);
-                                                    //adding comment at the end
-                                                    commentList.insert(
-                                                        commentList.length,
-                                                        value);
-                                                  });
-                                                  commentController.clear();
-                                                  FocusScope.of(context)
-                                                      .unfocus();
-                                                } else {
-                                                  debugPrint("Not validated");
-                                                }
-                                              },
-                                              formKey: formKey,
-                                              commentController:
-                                                  commentController,
-                                              //comment input box color
-                                              backgroundColor:
-                                                  const Color(0xFF27123F),
-                                              //comment text color
-                                              textColor: Colors.white70,
-                                              //send icon for commenting
-                                              sendWidget: const Icon(
-                                                  Icons.send_sharp,
-                                                  size: 25,
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        );
                                       },
                                       child: const Icon(
                                         CupertinoIcons.bubble_middle_bottom,
