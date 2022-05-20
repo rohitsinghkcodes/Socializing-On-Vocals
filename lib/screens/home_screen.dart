@@ -97,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         //Setting playlist size i.e. no of songs available currently in db
         //Updating List of Songs
         setState(() {
+          isPlaying = true;
           songList = list;
           playlistSize = list.length;
           showSpinner = false;
