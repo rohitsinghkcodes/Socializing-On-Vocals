@@ -1,5 +1,8 @@
 
 //Validation check for Password
+import 'package:flutter/cupertino.dart';
+import 'package:string_validator/string_validator.dart';
+
 bool isDigit(String s, int idx) =>
     "0".compareTo(s[idx]) <= 0 && "9".compareTo(s[idx]) >= 0;
 
@@ -18,6 +21,7 @@ String? passwordCheck(String value)
   if ( value.isNotEmpty) {
     // Check if valid special characters are present
     hasSpecialCharacters = value.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+
     while (i < value.length){
       character = value.substring(i,i+1);
       // print(character);
@@ -26,16 +30,25 @@ String? passwordCheck(String value)
         hasDigits=true;
       }else{
 
-        if (character == character.toUpperCase()) {
+        print(character);
+        if (character == character.toUpperCase() && isAlpha(character)) {
           hasUppercase=true;
         }
-        if (character == character.toLowerCase()){
+        if (character == character.toLowerCase()&& isAlpha(character)){
           hasLowercase=true;
         }
       }
       i++;
     }
   }
+
+  //printing current status of password condition variables
+  debugPrint( 'upper: $hasUppercase');
+  debugPrint( 'lower: $hasLowercase');
+  debugPrint( 'digit: $hasDigits');
+  debugPrint( 'sp.char: $hasSpecialCharacters');
+
+
   if(!hasUppercase)
     {
       return "Uppercase missing!";
@@ -59,6 +72,8 @@ String? passwordCheck(String value)
   else{
     return null;
   }
+
+
 }
 
 //Validation Check For Email
