@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socializing_on_vocals/helper/colors.dart';
 import 'package:socializing_on_vocals/screens/profile_screen.dart';
 import 'package:socializing_on_vocals/screens/welcome_screen.dart';
-
 import 'app_details_section/about_us_screen.dart';
 import 'app_details_section/privacy_policy.dart';
 import 'app_details_section/terms_and_conditions.dart';
@@ -157,7 +156,7 @@ class _SettingsState extends State<Settings> {
                         ]).toList(),
                   ),
                 ),
-                const Text('v2.1.0',style: TextStyle(color: Colors.white70),),     //app version
+                const Text('v2.1.1',style: TextStyle(color: Colors.white70),),     //app version
               ],
             ),
           ),

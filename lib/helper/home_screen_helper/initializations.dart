@@ -15,6 +15,7 @@ bool showSpinner = false;
 List<dynamic> songList = [];
 List<dynamic> likesList = [];
 int audioLikesCount = 0;
+int audioCommentCount = 0;
 int currentAudioNo = 0;
 late String audioTitle = "hello";
 int playlistSize = 0;

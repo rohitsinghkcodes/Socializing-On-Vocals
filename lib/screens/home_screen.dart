@@ -4,7 +4,6 @@ import 'package:comment_box/comment/comment.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:multiavatar/multiavatar.dart';
@@ -110,6 +109,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           likesList = songList[currentAudioNo]['likes'];
           //setting likes count
           audioLikesCount = likesList.length;
+
+          //Setting comments count
+          audioCommentCount = songList[currentAudioNo]['comments'].length;
+          debugPrint('This is comment count: $audioCommentCount');
+          print(songList[currentAudioNo]['comments']);
 
           //setting song id
           songId = songList[0]['songid'].toString();
@@ -309,6 +313,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     postComment(
                         songList[currentAudioNo]['songid']
                             .toString(), value['userId'], value['msg'], value['username']);
+
+                    //increasing the comment count
+                    audioCommentCount = audioCommentCount+1;
+
+                    //inserting new added comment
+                    var newComment = {'userId':value['userId'],'username':value['username'], 'msg':value['msg']};
+                    songList[currentAudioNo]['comments'].add(newComment);
+                    debugPrint(newComment.toString());    //checking new added comment
+
+
                     //adding comment at the end
                     commentList.insert(
                         commentList.length,
@@ -448,6 +462,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             //updating likes count
                             audioLikesCount = likesList.length;
 
+                            //updating Comments count
+                            audioCommentCount = songList[currentAudioNo]['comments'].length;
+                            debugPrint('This is comment count: $audioCommentCount');
+
                             //setting like button
                             isLikeSet();
 
@@ -546,36 +564,36 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     const SizedBox(
                                       width: 10,
                                     ),
+                                    // const Text(
+                                    //   '|',
+                                    //   style: TextStyle(
+                                    //       color: Color(0x20fffdfd),
+                                    //       fontSize: 30),
+                                    // ),
+                                    // const SizedBox(
+                                    //   width: 10,
+                                    // ),
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     Fluttertoast.showToast(
+                                    //         msg: "Just pressed share button",
+                                    //         toastLength: Toast.LENGTH_SHORT,
+                                    //         gravity: ToastGravity.BOTTOM,
+                                    //         backgroundColor: Colors.black45,
+                                    //         textColor: Colors.white,
+                                    //         fontSize: 16.0);
+                                    //   },
+                                    //   child: const Icon(
+                                    //     Icons.share_rounded,
+                                    //     color: Color(0xff367fb1),
+                                    //     size: 30,
+                                    //   ),
+                                    // ),
+                                    // const SizedBox(
+                                    //   width: 10,
+                                    // ),
                                     const Text(
-                                      '|',
-                                      style: TextStyle(
-                                          color: Color(0x20fffdfd),
-                                          fontSize: 30),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Fluttertoast.showToast(
-                                            msg: "Just pressed share button",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.black45,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0);
-                                      },
-                                      child: const Icon(
-                                        Icons.share_rounded,
-                                        color: Color(0xff367fb1),
-                                        size: 30,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    const Text(
-                                      '|',
+                                      '| ',
                                       style: TextStyle(
                                           color: Color(0x20fffdfd),
                                           fontSize: 30),
@@ -606,6 +624,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         CupertinoIcons.bubble_middle_bottom,
                                         color: Color(0xff5eb161),
                                         size: 30,
+                                      ),
+
+                                    ),
+                                    const SizedBox(width: 10,),
+                                    Text(
+                                      audioCommentCount.toString(),
+                                      style: const TextStyle(
+                                        color: Color(0xff5eb161),
                                       ),
                                     ),
                                   ],
