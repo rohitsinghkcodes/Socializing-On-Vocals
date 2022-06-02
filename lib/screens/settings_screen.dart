@@ -156,7 +156,7 @@ class _SettingsState extends State<Settings> {
                         ]).toList(),
                   ),
                 ),
-                const Text('v2.1.1',style: TextStyle(color: Colors.white70),),     //app version
+                const Text('v2.1.2',style: TextStyle(color: Colors.white70),),     //app version
               ],
             ),
           ),
